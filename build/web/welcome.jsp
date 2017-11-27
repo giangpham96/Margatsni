@@ -14,11 +14,21 @@
     <body>
 
         <%
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            
+            response.setHeader("Pragma", "no-cache");
+            
+            response.setHeader("Expires", "0");
+            
             if (request.getSession().getAttribute("uid") == null) {
                 response.sendRedirect("index.jsp");
             }
             Long uid = (Long) request.getSession().getAttribute("uid");
         %>
         <h1><%= uid %></h1>
+        <br>
+        <form action="logout">
+            <input type="submit" value="Log out"/>
+        </form>
     </body>
 </html>

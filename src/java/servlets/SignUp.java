@@ -51,7 +51,11 @@ public class SignUp extends HttpServlet {
         }
 
         User user = account.signUp(username, email, password);
-
+        
+        if (user == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
         HttpSession session = request.getSession(true);
         session.setAttribute("uid", user.getUid());
         response.sendRedirect("welcome.jsp");

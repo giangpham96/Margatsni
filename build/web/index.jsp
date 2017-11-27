@@ -12,6 +12,16 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%  
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            
+            response.setHeader("Pragma", "no-cache");
+            
+            response.setHeader("Expires", "0");
+            if (request.getSession().getAttribute("uid") != null) {
+                response.sendRedirect("welcome.jsp");
+            }
+        %>
         <h1>Sign Up</h1>
         <form action="signup" method="post">
             <input type="text" name="username" required placeholder="username"><br>

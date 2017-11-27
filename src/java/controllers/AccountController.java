@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -50,22 +52,27 @@ public class AccountController {
     }
 
     public User signUp(String username, String email, String password) {
-        User user = new User();
-        user.setUname(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        em.persist(user);
-        return user;
+        try {
+            User user = new User();
+            user.setUname(username);
+            user.setEmail(email);
+            password = PasswordSecureHelper.encrypt(password);
+            user.setPassword(password);
+            em.persist(user);
+            return user;
+        } catch (Exception ex) {
+            return null;
+        }
     }
     
     public User logIn(String email, String password) {
         try {
             User user = (User) em.createNamedQuery("User.authorized")
                     .setParameter("email", email)
-                    .setParameter("password", password)
+                    .setParameter("password", PasswordSecureHelper.encrypt(password))
                     .getSingleResult();
             return user;
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             return null;
         }
     }
