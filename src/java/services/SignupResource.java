@@ -8,18 +8,9 @@ package services;
 import controllers.HelperBean;
 import controllers.SecureHelper;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
-import javax.ws.rs.core.MediaType;
 import models.User;
 import org.json.JSONObject;
 
@@ -30,15 +21,11 @@ import org.json.JSONObject;
  */
 @Path("signup")
 public class SignupResource {
-
-    @PersistenceContext
-    private EntityManager em;
     
     @EJB
     HelperBean hb;
     
     @POST
-    @Path("/signup")
     public String post(
             @FormParam("uname") String uname,
             @FormParam("email") String email,
@@ -52,13 +39,11 @@ public class SignupResource {
             return "{\"error\":\"this username has already been taken\"}";
         }
         try {
-            User user = new User();
-            user.setUname(uname);
-            user.setEmail(email);
-            password = SecureHelper.encrypt(password);
-            user.setPassword(password);
-            em.persist(user);
-            String auth_session = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 60000));
+            User user = hb.signUp(uname, email, password);
+            if (user == null)
+                return "{\"error\":\"internal error, cannot create user\"}";
+                
+            String auth_session = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
             String auth_token = SecureHelper.encrypt(String.valueOf(user.getUid()));
 
             return new JSONObject()
@@ -66,7 +51,7 @@ public class SignupResource {
                     .put("auth-token", auth_token)
                     .toString();
         } catch (Exception ex) {
-            return "{\"error\":\"internal error, cannot create user\"}";
+            return "{\"error\":\""+ex+"\"}";
         }
     }
 

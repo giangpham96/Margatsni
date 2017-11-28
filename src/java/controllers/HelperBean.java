@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -56,5 +58,20 @@ public class HelperBean {
             return false;
         }
         return true;
+    }
+    
+    public User signUp(String uname, String email, String password) {
+        try {
+            User user = new User();
+            user.setUname(uname);
+            user.setEmail(email);
+            password = SecureHelper.encrypt(password);
+            user.setPassword(password);
+            em.persist(user);
+            return user;
+        } catch (Exception ex) {
+            return null;
+        }
+            
     }
 }
