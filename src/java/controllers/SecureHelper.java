@@ -19,7 +19,7 @@ import sun.misc.BASE64Encoder;
  *
  * @author conme
  */
-public class PasswordSecureHelper {
+public class SecureHelper {
     private static final String ALGO = "AES";
     private static final byte[] KEY = 
         new byte[] { 

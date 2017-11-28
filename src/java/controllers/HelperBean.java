@@ -5,8 +5,6 @@
  */
 package controllers;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -18,14 +16,12 @@ import models.User;
  * @author conme
  */
 @Stateless
-public class AccountController {
+public class HelperBean {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
     @PersistenceContext
     private EntityManager em;
 
-    public AccountController() {
+    public HelperBean() {
 
     }
 
@@ -50,30 +46,15 @@ public class AccountController {
         }
         return true;
     }
-
-    public User signUp(String username, String email, String password) {
-        try {
-            User user = new User();
-            user.setUname(username);
-            user.setEmail(email);
-            password = PasswordSecureHelper.encrypt(password);
-            user.setPassword(password);
-            em.persist(user);
-            return user;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
     
-    public User logIn(String email, String password) {
+    public boolean isIdValid(long uid) {
         try {
-            User user = (User) em.createNamedQuery("User.authorized")
-                    .setParameter("email", email)
-                    .setParameter("password", PasswordSecureHelper.encrypt(password))
+            User user = (User) em.createNamedQuery("User.findByUid")
+                    .setParameter("uid", uid)
                     .getSingleResult();
-            return user;
-        } catch (Exception e) {
-            return null;
+        } catch (NoResultException e) {
+            return false;
         }
+        return true;
     }
 }
