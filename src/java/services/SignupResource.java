@@ -51,7 +51,7 @@ public class SignupResource {
                     .put("auth-token", auth_token)
                     .toString();
         } catch (Exception ex) {
-            return "{\"error\":\""+ex+"\"}";
+            return "{\"error\":\"internal error, cannot create user\"}";
         }
     }
 
