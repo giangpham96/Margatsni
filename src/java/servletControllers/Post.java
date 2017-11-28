@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlet;
+package servletControllers;
 
-import controllers.PostHelperBean;
-import controllers.UserHelperBean;
-import controllers.SecureHelper;
+import dataAccessObjects.PostHelperBean;
+import dataAccessObjects.UserHelperBean;
+import dataAccessObjects.SecureHelper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -101,6 +101,8 @@ public class Post extends HttpServlet {
                 jcom.put("profile_pic", c.getUid().getProfilePic());
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
+                jcom.put("comment_id", SecureHelper
+                                .encrypt(String.valueOf(c.getCommentId())));
                 jcomments.put(jcom);
             }
             

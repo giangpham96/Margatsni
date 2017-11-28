@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controllers;
+package dataAccessObjects;
 
 import java.math.BigInteger;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -53,8 +54,8 @@ public class PostHelperBean {
 
     }
     
-//    public JSONObject getPostInfo(long postId) {
-//        Post post = em.createNamedQuery("Post.findByPostId")
-//                .setParameter(param, uid)
-//    }
+    
+    public List<Post> getAllPosts() {
+        return em.createNamedQuery("Post.findAll").getResultList();
+    }
 }

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package services;
+package serviceControllers;
 
-import controllers.UserHelperBean;
-import controllers.SecureHelper;
+import dataAccessObjects.UserHelperBean;
+import dataAccessObjects.SecureHelper;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.FormParam;
