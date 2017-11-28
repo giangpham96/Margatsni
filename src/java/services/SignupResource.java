@@ -5,7 +5,7 @@
  */
 package services;
 
-import controllers.HelperBean;
+import controllers.UserHelperBean;
 import controllers.SecureHelper;
 import javax.ejb.EJB;
 import javax.ws.rs.FormParam;
@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public class SignupResource {
     
     @EJB
-    HelperBean hb;
+    UserHelperBean hb;
     
     @POST
     public String post(
@@ -39,7 +39,7 @@ public class SignupResource {
             return "{\"error\":\"this username has already been taken\"}";
         }
         try {
-            User user = hb.signUp(uname, email, password);
+            User user = hb.addUser(uname, email, password);
             if (user == null)
                 return "{\"error\":\"internal error, cannot create user\"}";
                 

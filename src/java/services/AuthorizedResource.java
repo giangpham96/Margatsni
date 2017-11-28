@@ -5,23 +5,15 @@
  */
 package services;
 
-import controllers.HelperBean;
+import controllers.UserHelperBean;
 import controllers.SecureHelper;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
 import models.User;
 import org.json.JSONObject;
@@ -34,25 +26,15 @@ import org.json.JSONObject;
 @Path("authorized")
 public class AuthorizedResource {
 
-    @PersistenceContext
-    private EntityManager em;
-    
     @EJB
-    private HelperBean hb;
+    private UserHelperBean hb;
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public String post(@FormParam("email") String email,
             @FormParam("password") String password) {
         try {
-            User user = null;
-            try {
-                user = (User) em.createNamedQuery("User.authorized")
-                        .setParameter("email", email)
-                        .setParameter("password", SecureHelper.encrypt(password))
-                        .getSingleResult();
-            } catch (Exception ex) {
-            }
+            User user = hb.getUser(email, password);
 
             if (user == null) {
                 return "{\"error\":\"wrong email or password\"}";

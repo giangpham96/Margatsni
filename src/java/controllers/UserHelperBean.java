@@ -18,12 +18,12 @@ import models.User;
  * @author conme
  */
 @Stateless
-public class HelperBean {
+public class UserHelperBean {
 
     @PersistenceContext
     private EntityManager em;
 
-    public HelperBean() {
+    public UserHelperBean() {
 
     }
 
@@ -48,7 +48,7 @@ public class HelperBean {
         }
         return true;
     }
-    
+
     public boolean isIdValid(long uid) {
         try {
             User user = (User) em.createNamedQuery("User.findByUid")
@@ -59,8 +59,8 @@ public class HelperBean {
         }
         return true;
     }
-    
-    public User signUp(String uname, String email, String password) {
+
+    public User addUser(String uname, String email, String password) {
         try {
             User user = new User();
             user.setUname(uname);
@@ -72,6 +72,16 @@ public class HelperBean {
         } catch (Exception ex) {
             return null;
         }
-            
+    }
+
+    public User getUser(String email, String password) {
+        try {
+            return (User) em.createNamedQuery("User.authorized")
+                    .setParameter("email", email)
+                    .setParameter("password", SecureHelper.encrypt(password))
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
