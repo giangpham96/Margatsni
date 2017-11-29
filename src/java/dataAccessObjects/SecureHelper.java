@@ -53,7 +53,7 @@ public class SecureHelper {
     
 //    public static void main (String[] args) {
 //        try {
-//            System.out.println(encrypt("32"));
+//            System.out.println(decrypt("o9kiZuDfUOfjyBZNzZoxNA=="));
 //        } catch (Exception ex) {
 //            Logger.getLogger(SecureHelper.class.getName()).log(Level.SEVERE, null, ex);
 //        }

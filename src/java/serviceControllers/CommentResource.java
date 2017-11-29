@@ -9,7 +9,6 @@ import dataAccessObjects.CommentHelperBean;
 import dataAccessObjects.PostHelperBean;
 import dataAccessObjects.SecureHelper;
 import dataAccessObjects.UserHelperBean;
-import java.util.Collection;
 import javax.ejb.EJB;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
@@ -21,8 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import models.Comment;
 import models.Post;
-import models.User;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
