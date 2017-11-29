@@ -24,14 +24,13 @@ public class CommentHelperBean {
 
     @PersistenceContext
     private EntityManager em;
-    
-public Comment addComment(long uid, long postId, String content) {
+
+    public Comment addComment(long uid, long postId, String content) {
         try {
             User user = (User) em.createNamedQuery("User.findByUid")
                     .setParameter("uid", uid)
                     .getSingleResult();
-            
-            
+
             Post post = (Post) em.createNamedQuery("Post.findByPostId")
                     .setParameter("postId", postId)
                     .getSingleResult();
@@ -48,5 +47,26 @@ public Comment addComment(long uid, long postId, String content) {
             return null;
         }
 
+    }
+
+    public Comment updateComment(Comment c) {
+        em.merge(c);
+        return c;
+    }
+
+    public Comment getCommentById(long id) {
+        try {
+            return (Comment) em.createNamedQuery("Comment.findByCommentId")
+                    .setParameter("commentId", id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null;
+        }
+
+    }
+
+    public void deleteComment(Comment c) {
+        Comment toBeRemoved = em.merge(c);
+        em.remove(toBeRemoved);
     }
 }
