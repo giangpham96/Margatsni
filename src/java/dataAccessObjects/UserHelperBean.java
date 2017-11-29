@@ -84,4 +84,14 @@ public class UserHelperBean {
             return null;
         }
     }
+    
+    public User getUserById(long uid) {
+        try {
+            return (User) em.createNamedQuery("User.findByUid")
+                    .setParameter("uid", uid)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

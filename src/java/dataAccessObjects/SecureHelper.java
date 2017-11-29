@@ -50,4 +50,12 @@ public class SecureHelper {
         Key key = new SecretKeySpec(KEY, ALGO);
         return key;
     }
+    
+//    public static void main (String[] args) {
+//        try {
+//            System.out.println(encrypt("32"));
+//        } catch (Exception ex) {
+//            Logger.getLogger(SecureHelper.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 }

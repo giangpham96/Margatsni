@@ -61,4 +61,16 @@ public class PostHelperBean {
                 .setMaxResults(20)
                 .getResultList();
     }
+    
+    
+    public List<Post> getPostsByUidInPage(long uid, int page) {
+        User user = (User) em.createNamedQuery("User.findByUid")
+                    .setParameter("uid", uid)
+                    .getSingleResult();
+        return em.createNamedQuery("Post.findAllByUid")
+                .setParameter("uid", user)
+                .setFirstResult(page*20)
+                .setMaxResults(20)
+                .getResultList();
+    }
 }
