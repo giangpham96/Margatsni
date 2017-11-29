@@ -43,12 +43,14 @@ public class SignupResource {
             if (user == null)
                 return "{\"error\":\"internal error, cannot create user\"}";
                 
-            String auth_session = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
-            String auth_token = SecureHelper.encrypt(String.valueOf(user.getUid()));
+//            String auth_session = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
+//            String auth_token = SecureHelper.encrypt(String.valueOf(user.getUid()));
 
+            String originalAuth = user.getUid()+"::"+System.currentTimeMillis() + 600000;
+            String auth = SecureHelper.encrypt(originalAuth);
+            
             return new JSONObject()
-                    .put("auth-session", auth_session)
-                    .put("auth-token", auth_token)
+                    .put("auth-token", auth)
                     .toString();
         } catch (Exception ex) {
             return "{\"error\":\"internal error, cannot create user\"}";

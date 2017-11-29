@@ -39,12 +39,15 @@ public class AuthorizedResource {
             if (user == null) {
                 return "{\"error\":\"wrong email or password\"}";
             }
-            String authSession = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
-            String authToken = SecureHelper.encrypt(String.valueOf(user.getUid()));
+            
+            String originalAuth = user.getUid()+"::"+System.currentTimeMillis() + 600000;
+            String auth = SecureHelper.encrypt(originalAuth);
+            
+//            String authSession = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
+//            String authToken = SecureHelper.encrypt(String.valueOf(user.getUid()));
 
             return new JSONObject()
-                    .put("auth-session", authSession)
-                    .put("auth-token", authToken)
+                    .put("auth-token", auth)
                     .toString();
         } catch (Exception ex) {
             return "{\"error\":\"internal error, cannot authorize user\"}";
@@ -54,22 +57,25 @@ public class AuthorizedResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String get(
-            @HeaderParam("auth-session") String authSession,
             @HeaderParam("auth-token") String authToken) {
         try {
-            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
+            
+            String originalAuth = SecureHelper.decrypt(authToken);
+            
+            String[] authInfo = originalAuth.split("::");
+            
+            long expired = Long.valueOf(authInfo[1]);
             if(expired < System.currentTimeMillis()) {
                 return "{\"message\":\"session expired\"}";
             }
             
-            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
+            long uid = Long.valueOf(authInfo[0]);
             
             if (!hb.isIdValid(uid)) {
                 return "{\"message\":\"user not found\"}";
             }
             
             return new JSONObject()
-                    .put("auth-session", authSession)
                     .put("auth-token", authToken)
                     .toString();
         } catch (Exception ex) {

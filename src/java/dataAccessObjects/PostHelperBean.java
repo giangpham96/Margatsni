@@ -55,7 +55,10 @@ public class PostHelperBean {
     }
     
     
-    public List<Post> getAllPosts() {
-        return em.createNamedQuery("Post.findAll").getResultList();
+    public List<Post> getPostsInPage(int page) {
+        return em.createNamedQuery("Post.findAll")
+                .setFirstResult(page*20)
+                .setMaxResults(20)
+                .getResultList();
     }
 }

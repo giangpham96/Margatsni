@@ -40,61 +40,65 @@ public class Post extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String authSession = request.getHeader("auth-session");
+//        String authSession = request.getHeader("auth-session");
         String authToken = request.getHeader("auth-token");
-        
-        String caption = request.getParameter("caption");
-        
-        short permission = 0;
-        
-        boolean isSharedPost = false;
-        
-        response.setContentType("application/json");
-        try(PrintWriter out = response.getWriter()) {
 
-            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
+        String caption = request.getParameter("caption");
+
+        short permission = 0;
+
+        boolean isSharedPost = false;
+
+        response.setContentType("application/json");
+        try (PrintWriter out = response.getWriter()) {
+
+            String originalAuth = SecureHelper.decrypt(authToken);
+
+            String[] authInfo = originalAuth.split("::");
+
+//            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
+            long expired = Long.valueOf(authInfo[1]);
             if (expired < System.currentTimeMillis()) {
                 out.println("{\"message\":\"session expired\"}");
                 return;
             }
-            
-            
-            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
+
+//            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
+            long uid = Long.valueOf(authInfo[0]);
 
             if (!hb.isIdValid(uid)) {
                 out.println("{\"message\":\"user not found\"}");
                 return;
             }
-            
-            String fileName = uid+"_"+System.currentTimeMillis()+request
+
+            String fileName = uid + "_" + System.currentTimeMillis() + request
                     .getPart("file").getSubmittedFileName();
-            
+
             request.getPart("file").write(fileName);
-            
-            
-            models.Post post =  pb.addPost(uid, 
-                    "http://10.114.32.118/margatsni/"+fileName
-                    , caption, permission, isSharedPost, 0L);
-            
-            if(post == null) {
+
+            models.Post post = pb.addPost(uid,
+                    "http://10.114.32.118/margatsni/" + fileName,
+                     caption, permission, isSharedPost, 0L);
+
+            if (post == null) {
                 out.println("{\"message\":\"internal error, cannot write post\"}");
                 return;
             }
-            
+
             JSONObject json = new JSONObject();
-            
+
             json.put("src", post.getSrc());
             json.put("postId", SecureHelper
-                                .encrypt(String.valueOf(post.getPostId())));
+                    .encrypt(String.valueOf(post.getPostId())));
             json.put("timestamp", post.getTimestamp());
             json.put("caption", post.getCaption());
-            
+
             Collection<Comment> comments = post.getCommentCollection();
-            
+
             JSONArray jcomments = new JSONArray();
-            for(Comment c : comments) {
+            for (Comment c : comments) {
                 JSONObject jcom = new JSONObject();
-                jcom.put("uid", 
+                jcom.put("uid",
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
@@ -102,17 +106,16 @@ public class Post extends HttpServlet {
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper
-                                .encrypt(String.valueOf(c.getCommentId())));
+                        .encrypt(String.valueOf(c.getCommentId())));
                 jcomments.put(jcom);
             }
-            
+
             json.put("comments", jcomments);
-            
-            
+
             JSONArray jlikes = new JSONArray();
-            for(User u : post.getUserCollection()) {
+            for (User u : post.getUserCollection()) {
                 JSONObject jlike = new JSONObject();
-                jlike.put("uid", 
+                jlike.put("uid",
                         SecureHelper
                                 .encrypt(String.valueOf(u.getUid())));
                 jlike.put("uname", u.getUname());
@@ -120,11 +123,11 @@ public class Post extends HttpServlet {
                 jcomments.put(jlike);
             }
             json.put("likes", jlikes);
-            
+
             out.println(json.toString());
         } catch (Exception ex) {
-            
+
         }
     }
-    
+
 }
