@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Login page</title>
+        <link rel="stylesheet" href="../css/login.css">
+    </head>
+    <body>
+        <div class="container">
+        <div class="login-box">
+            <nav class="tab-selector">
+                <ul>
+                    <li><a href="#" class="active" id="logintab">Log in</a></li>
+                    <li><a href="#" class="inactive" id="signuptab">Sign up</a></li>
+                </ul>
+            </nav>
+            <div class="login-tab tab">
+                <form method="post">
+                    <label for="mail">E-mail:</label>
+                    <input placeholder="e-mail" type="email">
+                    <label for="password">Password:</label>
+                    <input placeholder="password" type=password>
+                    <button>Log in</button>
+                </form>
+            </div>
+            <div class="singup-tab tab hidden">
+                <form>
+                    <label>Username:</label>
+                    <input placeholder="username">
+                    <label for="mail">E-mail:</label>
+                    <input placeholder="e-mail" type="email">
+                    <label for="password">Password:</label>
+                    <input placeholder="password" type=password>
+                    <button>Sign up</button>
+                </form>
+            </div>
+            <button>Continue without an account</button>
+        </div>
+        </div>
+    </body>
+    <script src="../script/login.js"></script>
+</html>

@@ -1,0 +1,95 @@
+body,html{
+    height: 98%;
+}
+
+body{
+    background-image: url(../img/bg.jpg);
+    background-size: 100%;
+}
+
+
+.container{
+    height:100%;
+    padding-right: 3%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.login-box{
+    float:right;
+    background: #fff;
+    box-shadow: 3px 3px 3px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px 10px 20px;
+}
+
+.tab-selector{
+    border-bottom: 2px solid black;
+}
+
+ul{
+    display: flex;
+    justify-content: space-around;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li{
+    text-align: center;
+    width:50%;
+    font-size: 2rem;
+}
+
+a{
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+input{
+    margin: 0.3rem;
+    height: 1.8rem;
+    width: 15rem;
+    padding-left: 0.3rem;
+}
+
+button{
+    width: 80%;
+    height: 1.8rem;
+    margin: 0.3rem auto;
+    background: linear-gradient(to bottom, #a90329 0%,#8f0222 44%,#6d0019 100%);
+    color: white;
+    border:0;
+}
+
+button:hover{
+    box-shadow: 0px 0px 10px 1px black;
+}
+
+.active{
+    color:red;
+}
+
+.inactive{
+    color: white;
+    background: red;
+    text-decoration: underline;
+}
+
+.inactive:hover{
+    color:black;
+}
+
+.hidden{
+    display: none;
+}
+
