@@ -45,7 +45,6 @@ public class PostHelperBean {
                 post.setSharedpostId(sharedPost);
             }
 
-
             em.persist(post);
             return post;
         } catch (Exception ex) {
@@ -53,24 +52,32 @@ public class PostHelperBean {
         }
 
     }
-    
-    
+
     public List<Post> getPostsInPage(int page) {
         return em.createNamedQuery("Post.findAll")
-                .setFirstResult(page*20)
+                .setFirstResult(page * 20)
                 .setMaxResults(20)
                 .getResultList();
     }
-    
-    
+
     public List<Post> getPostsByUidInPage(long uid, int page) {
         User user = (User) em.createNamedQuery("User.findByUid")
-                    .setParameter("uid", uid)
-                    .getSingleResult();
+                .setParameter("uid", uid)
+                .getSingleResult();
         return em.createNamedQuery("Post.findAllByUid")
                 .setParameter("uid", user)
-                .setFirstResult(page*20)
+                .setFirstResult(page * 20)
                 .setMaxResults(20)
                 .getResultList();
+    }
+
+    public Post getPostById(long postId) {
+        try {
+            return (Post) em.createNamedQuery("Post.findByPostId")
+                    .setParameter("postId", postId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
