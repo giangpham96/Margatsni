@@ -30,7 +30,9 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(serviceControllers.AuthorizedResource.class);
+        resources.add(serviceControllers.CommentResource.class);
         resources.add(serviceControllers.FeedResource.class);
+        resources.add(serviceControllers.PostResource.class);
         resources.add(serviceControllers.ProfileResource.class);
         resources.add(serviceControllers.SignupResource.class);
     }

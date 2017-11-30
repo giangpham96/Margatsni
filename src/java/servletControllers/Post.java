@@ -8,7 +8,9 @@ package servletControllers;
 import dataAccessObjects.PostHelperBean;
 import dataAccessObjects.UserHelperBean;
 import dataAccessObjects.SecureHelper;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Collection;
 import javax.ejb.EJB;
@@ -18,6 +20,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import models.Comment;
 import models.User;
 import org.json.JSONArray;
@@ -27,7 +30,7 @@ import org.json.JSONObject;
  *
  * @author conme
  */
-@WebServlet(name = "Post", urlPatterns = {"/api/post"})
+@WebServlet(name = "Post", urlPatterns = {"/api/post/new"})
 @MultipartConfig(location = "/var/www/html/margatsni")
 public class Post extends HttpServlet {
 
@@ -43,7 +46,7 @@ public class Post extends HttpServlet {
 //        String authSession = request.getHeader("auth-session");
         String authToken = request.getHeader("auth-token");
 
-        String caption = request.getParameter("caption");
+        String caption = getValue(request.getPart("caption"));
 
         short permission = 0;
 
@@ -78,7 +81,7 @@ public class Post extends HttpServlet {
 
             models.Post post = pb.addPost(uid,
                     "http://10.114.32.118/margatsni/" + fileName,
-                     caption, permission, isSharedPost, 0L);
+                    caption, permission, isSharedPost, 0L);
 
             if (post == null) {
                 out.println("{\"message\":\"internal error, cannot write post\"}");
@@ -112,22 +115,130 @@ public class Post extends HttpServlet {
 
             json.put("comments", jcomments);
 
-            JSONArray jlikes = new JSONArray();
-            for (User u : post.getUserCollection()) {
-                JSONObject jlike = new JSONObject();
-                jlike.put("uid",
-                        SecureHelper
-                                .encrypt(String.valueOf(u.getUid())));
-                jlike.put("uname", u.getUname());
-                jlike.put("profile_pic", u.getProfilePic());
-                jcomments.put(jlike);
-            }
-            json.put("likes", jlikes);
+//            JSONArray jlikes = new JSONArray();
+//            for (User u : post.getUserCollection()) {
+//                JSONObject jlike = new JSONObject();
+//                jlike.put("uid",
+//                        SecureHelper
+//                                .encrypt(String.valueOf(u.getUid())));
+//                jlike.put("uname", u.getUname());
+//                jlike.put("profile_pic", u.getProfilePic());
+//                jcomments.put(jlike);
+//            }
+            json.put("likes", post.getUserCollection().size());
 
             out.println(json.toString());
         } catch (Exception ex) {
 
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String authToken = request.getHeader("auth-token");
+
+        String authPost = request.getPart("post").toString();
+
+        String caption = request.getPart("caption").toString();
+        PrintWriter out = response.getWriter();
+        try {
+
+            String originalAuth = SecureHelper.decrypt(authToken);
+
+            String[] authInfo = originalAuth.split("::");
+
+//            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                out.println("{\"message\":\"session expired\"}");
+                return;
+            }
+
+//            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
+            long uid = Long.valueOf(authInfo[0]);
+
+            if (!hb.isIdValid(uid)) {
+                out.println("{\"message\":\"user not found\"}");
+                return;
+            }
+
+            long postid = Long.valueOf(SecureHelper.decrypt(authPost));
+
+            models.Post post = pb.getPostById(postid);
+
+            if (post == null) {
+                out.println("{\"message\":\"post not found\"}");
+                return;
+            }
+
+            if (post.getUid().getUid() != uid) {
+                out.println("{\"message\":\"permission denied\"}");
+                return;
+            }
+
+            post.setCaption(caption);
+            post = pb.update(post);
+
+            JSONObject json = new JSONObject();
+
+            json.put("src", post.getSrc());
+            json.put("postId", SecureHelper
+                    .encrypt(String.valueOf(post.getPostId())));
+            json.put("timestamp", post.getTimestamp());
+            json.put("caption", post.getCaption());
+
+            Collection<Comment> comments = post.getCommentCollection();
+
+            JSONArray jcomments = new JSONArray();
+            for (Comment c : comments) {
+                JSONObject jcom = new JSONObject();
+                jcom.put("uid",
+                        SecureHelper
+                                .encrypt(String.valueOf(c.getUid().getUid())));
+                jcom.put("uname", c.getUid().getUname());
+                jcom.put("profile_pic", c.getUid().getProfilePic());
+                jcom.put("content", c.getContent());
+                jcom.put("timestamp", c.getTimestamp());
+                jcom.put("comment_id", SecureHelper
+                        .encrypt(String.valueOf(c.getCommentId())));
+                jcomments.put(jcom);
+            }
+
+            json.put("comments", jcomments);
+
+//            JSONArray jlikes = new JSONArray();
+//            for (User u : post.getUserCollection()) {
+//                JSONObject jlike = new JSONObject();
+//                jlike.put("uid",
+//                        SecureHelper
+//                                .encrypt(String.valueOf(u.getUid())));
+//                jlike.put("uname", u.getUname());
+//                jlike.put("profile_pic", u.getProfilePic());
+//                jcomments.put(jlike);
+//            }
+            json.put("likes", post.getUserCollection().size());
+
+            out.println(json.toString());
+        } catch (Exception ex) {
+
+            String err = "";
+            for (StackTraceElement e : ex.getStackTrace()) {
+                err += "\n" + e;
+            }
+            err += "\n" + ex.getCause() + "\n" + authPost;
+            out.print(err);
+        }
+    }
+
+    private String getValue(Part part) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
+        StringBuilder value = new StringBuilder();
+        char[] buffer = new char[1024];
+        for (int length = 0; (length = reader.read(buffer)) > 0;) {
+            value.append(buffer, 0, length);
+        }
+        return value.toString();
     }
 
 }

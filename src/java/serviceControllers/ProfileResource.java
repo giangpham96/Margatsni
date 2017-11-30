@@ -124,17 +124,17 @@ public class ProfileResource {
 
                 jpost.put("comments", jcomments);
 
-                JSONArray jlikes = new JSONArray();
-                for (User u : post.getUserCollection()) {
-                    JSONObject jlike = new JSONObject();
-                    jlike.put("uid",
-                            SecureHelper
-                                    .encrypt(String.valueOf(u.getUid())));
-                    jlike.put("uname", u.getUname());
-                    jlike.put("profile_pic", u.getProfilePic());
-                    jcomments.put(jlike);
-                }
-                jpost.put("likes", jlikes);
+//                JSONArray jlikes = new JSONArray();
+//                for (User u : post.getUserCollection()) {
+//                    JSONObject jlike = new JSONObject();
+//                    jlike.put("uid",
+//                            SecureHelper
+//                                    .encrypt(String.valueOf(u.getUid())));
+//                    jlike.put("uname", u.getUname());
+//                    jlike.put("profile_pic", u.getProfilePic());
+//                    jcomments.put(jlike);
+//                }
+                jpost.put("likes", post.getUserCollection().size());
                 jsonArray.put(jpost);
             }
             
