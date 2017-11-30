@@ -31,10 +31,11 @@ import org.json.JSONObject;
 public class CommentResource {
 
     @EJB
-    CommentHelperBean cb;
+    private CommentHelperBean cb;
     
     @EJB
     private UserHelperBean hb;
+    
     @EJB
     private PostHelperBean pb;
     

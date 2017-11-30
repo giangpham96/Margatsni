@@ -47,6 +47,7 @@ public class FeedResource {
         List<Post> posts = pb.getPostsInPage(page);
         try {
             long uid = -1;
+            User user = new User(-1L);
             if (authToken != null) {
                 String originalAuth = SecureHelper.decrypt(authToken);
 
@@ -57,8 +58,10 @@ public class FeedResource {
                     return "{\"message\":\"session expired\"}";
                 }
                 uid = Long.valueOf(authInfo[0]);
-
-                if (!hb.isIdValid(uid)) {
+                
+                user = hb.getUserById(uid);
+                
+                if (user == null) {
                     return "{\"message\":\"user not found\"}";
                 }
             }
@@ -104,18 +107,23 @@ public class FeedResource {
                 }
 
                 jpost.put("comments", jcomments);
-
-//                JSONArray jlikes = new JSONArray();
-//                for (User u : post.getUserCollection()) {
-//                    JSONObject jlike = new JSONObject();
-//                    jlike.put("uid",
-//                            SecureHelper
-//                                    .encrypt(String.valueOf(u.getUid())));
-//                    jlike.put("uname", u.getUname());
-//                    jlike.put("profile_pic", u.getProfilePic());
-//                    jcomments.put(jlike);
-//                }
                 jpost.put("likes", post.getUserCollection().size());
+                 boolean liked = false;
+
+                if (post.getUserCollection().contains(user)) {
+                    liked = true;
+                }
+
+                jpost.put("liked", liked);
+                boolean canLike = true, canComment = true;
+                
+                if (uid == -1) {
+                    canLike = false;
+                    canComment = false;
+                }
+                jpost.put("can_like", canLike);
+                jpost.put("can_comment", canComment);
+                
                 json.put(jpost);
             }
             return json.toString();

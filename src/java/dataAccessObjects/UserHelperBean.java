@@ -5,12 +5,11 @@
  */
 package dataAccessObjects;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import models.Post;
 import models.User;
 
 /**
@@ -67,6 +66,7 @@ public class UserHelperBean {
             user.setEmail(email);
             password = SecureHelper.encrypt(password);
             user.setPassword(password);
+            user.setIsAdmin(false);
             em.persist(user);
             return user;
         } catch (Exception ex) {
@@ -93,5 +93,24 @@ public class UserHelperBean {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public Post like(User user, Post post) {
+        
+        if (user.getPostCollection().contains(post)) {
+            user.getPostCollection().remove(post);
+            post.getUserCollection().remove(user);
+        } else {
+            user.getPostCollection().add(post);
+            post.getUserCollection().add(user);
+        }
+        em.merge(user);
+        Post merged = em.merge(post);
+        return merged;
+    }
+
+    public User update(User user) {
+        User u = em.merge(user);
+        return u;
     }
 }

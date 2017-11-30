@@ -80,7 +80,7 @@ public class PostHelperBean {
             return null;
         }
     }
-    
+
     public Post update(Post p) {
         em.merge(p);
         return p;
@@ -89,5 +89,9 @@ public class PostHelperBean {
     public void delete(Post post) {
         Post p = em.merge(post);
         em.remove(p);
+        for (User user : p.getUserCollection()) {
+            user.getPostCollection().remove(p);
+            em.merge(user);
+        }
     }
 }
