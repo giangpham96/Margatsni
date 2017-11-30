@@ -11,9 +11,11 @@ import dataAccessObjects.UserHelperBean;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -157,6 +159,48 @@ public class ProfileResource {
 //            err+="\n"+ex.getCause();
             return "{\"error\":\"internal error, cannot load this profile\"}";
         }
+    }
+    
+    
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public String put(@HeaderParam("auth-token") String authToken,
+            @FormParam("fav_quote") String favQuote) {
+        try {
 
+            long uid = -1;
+            if (authToken != null) {
+                String originalAuth = SecureHelper.decrypt(authToken);
+
+                String[] authInfo = originalAuth.split("::");
+
+                long expired = Long.valueOf(authInfo[1]);
+                if (expired < System.currentTimeMillis()) {
+                    return "{\"message\":\"session expired\"}";
+                }
+                uid = Long.valueOf(authInfo[0]);
+
+                if (!hb.isIdValid(uid)) {
+                    return "{\"message\":\"user not found\"}";
+                }
+
+            } else {
+                return "{\"message\":\"must log in first\"}";
+            }
+
+            User u = hb.getUserById(uid);
+            u.setFavQuote(favQuote);
+            
+            u = hb.update(u);
+           
+            return "{\"fav_quote\":\""+ favQuote +"\"}";
+        } catch (Exception ex) {
+//            String err="";
+//            for(StackTraceElement e : ex.getStackTrace()){
+//                err += "\n" +e;
+//            }
+//            err+="\n"+ex.getCause();
+            return "{\"error\":\"internal error, cannot load this profile\"}";
+        }
     }
 }

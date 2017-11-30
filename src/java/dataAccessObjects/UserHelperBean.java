@@ -5,6 +5,7 @@
  */
 package dataAccessObjects;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -112,5 +113,11 @@ public class UserHelperBean {
     public User update(User user) {
         User u = em.merge(user);
         return u;
+    }
+    
+    public List<User> searchUser (String search) {
+        return (List<User>)em.createNativeQuery("SELECT * FROM m_user WHERE m_user.uname LIKE \""+search+"%\"",
+                User.class)         
+                .getResultList();
     }
 }

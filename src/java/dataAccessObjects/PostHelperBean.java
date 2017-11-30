@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import models.Post;
 import models.User;
-import org.json.JSONObject;
 
 /**
  *
@@ -60,6 +59,12 @@ public class PostHelperBean {
                 .getResultList();
     }
 
+    public List<Post> getTopPostsInPage(int page) {
+        return (List<Post>)em.createNativeQuery("select m_post.post_id, m_post.timestamp, m_post.src, m_post.caption, m_post.uid, COUNT(m_like.post_id) as likes FROM m_post left JOIN m_like ON m_post.post_id = m_like.post_id GROUP BY m_post.post_id ORDER BY likes DESC LIMIT 24 OFFSET "+page * 24,
+                Post.class)         
+                .getResultList();
+    }
+    
     public List<Post> getPostsByUidInPage(long uid, int page) {
         User user = (User) em.createNamedQuery("User.findByUid")
                 .setParameter("uid", uid)
