@@ -43,9 +43,9 @@ public class ProfileResource {
             @QueryParam("user") String authUid,
             @QueryParam("page") int page) {
         try {
-            
+
             long userUid = Long.valueOf(SecureHelper.decrypt(authUid));
-            
+
             long uid = -1;
             if (authToken != null) {
                 String originalAuth = SecureHelper.decrypt(authToken);
@@ -61,26 +61,27 @@ public class ProfileResource {
                 if (!hb.isIdValid(uid)) {
                     return "{\"message\":\"user not found\"}";
                 }
-                
+
                 if (uid == userUid) {
                     return "{\"redirect\":\"profile/me\"}";
                 }
             }
-            
+
             User user = hb.getUserById(userUid);
-            
-            if(user == null)
+
+            if (user == null) {
                 return "{\"message\":\"cannot find profile\"}";
-            
+            }
+
             JSONObject json = new JSONObject();
-            
+
             json.put("uid", authUid);
             json.put("uname", user.getUname());
             json.put("fav_quote", user.getFavQuote());
             json.put("profile_pic", user.getProfilePic());
-            
+
             JSONArray jsonArray = new JSONArray();
-            
+
             List<Post> posts = pb.getPostsByUidInPage(userUid, page);
             for (Post post : posts) {
                 JSONObject jpost = new JSONObject();
@@ -124,20 +125,25 @@ public class ProfileResource {
 
                 jpost.put("comments", jcomments);
 
-//                JSONArray jlikes = new JSONArray();
-//                for (User u : post.getUserCollection()) {
-//                    JSONObject jlike = new JSONObject();
-//                    jlike.put("uid",
-//                            SecureHelper
-//                                    .encrypt(String.valueOf(u.getUid())));
-//                    jlike.put("uname", u.getUname());
-//                    jlike.put("profile_pic", u.getProfilePic());
-//                    jcomments.put(jlike);
-//                }
                 jpost.put("likes", post.getUserCollection().size());
+                boolean liked = false;
+
+                if (post.getUserCollection().contains(user)) {
+                    liked = true;
+                }
+
+                json.put("liked", liked);
+                boolean canLike = true, canComment = true;
+
+                if (uid == -1) {
+                    canLike = false;
+                    canComment = false;
+                }
+                jpost.put("can_like", canLike);
+                jpost.put("can_comment", canComment);
                 jsonArray.put(jpost);
             }
-            
+
             JSONObject postJson = new JSONObject();
             postJson.put("page", page);
             postJson.put("posts", jsonArray);

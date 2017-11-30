@@ -10,7 +10,6 @@ import dataAccessObjects.SecureHelper;
 import dataAccessObjects.UserHelperBean;
 import java.util.Collection;
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
@@ -19,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import models.Comment;
+import models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,8 +53,10 @@ public class PostResource {
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
             long uid = Long.valueOf(authInfo[0]);
-
-            if (!hb.isIdValid(uid)) {
+            
+            User user = hb.getUserById(uid);
+            
+            if (user==null) {
                 return "{\"message\":\"user not found\"}";
             }
 
@@ -99,25 +101,30 @@ public class PostResource {
             }
 
             json.put("comments", jcomments);
-
-//            JSONArray jlikes = new JSONArray();
-//            for (User u : post.getUserCollection()) {
-//                JSONObject jlike = new JSONObject();
-//                jlike.put("uid",
-//                        SecureHelper
-//                                .encrypt(String.valueOf(u.getUid())));
-//                jlike.put("uname", u.getUname());
-//                jlike.put("profile_pic", u.getProfilePic());
-//                jcomments.put(jlike);
-//            }
             json.put("likes", post.getUserCollection().size());
+            
+            boolean liked = false;
+            
+            if (post.getUserCollection().contains(user)) {
+                liked = true;
+            }
 
+            json.put("liked", liked);
+            
+            boolean canLike = true, canComment = true;
+
+            if (uid == -1) {
+                canLike = false;
+                canComment = false;
+            }
+            json.put("can_like", canLike);
+            json.put("can_comment", canComment);
             return json.toString();
         } catch (Exception ex) {
             return "{\"error\":\"internal error, cannot update post\"}";
         }
     }
-    
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public String delete(@FormParam("post") String authPost,
