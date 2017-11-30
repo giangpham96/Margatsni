@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'richardmurrayroman';
+    src: url('../fonts/richardm-webfont.woff2') format('woff2'),
+         url('../fonts/richardm-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 body,html{
     height: 98%;
 }
@@ -21,11 +30,18 @@ body{
     box-shadow: 3px 3px 3px;
     display: flex;
     flex-direction: column;
-    padding: 10px 20px 10px 20px;
+    padding: 1rem 2rem;
+    border:2px solid #ddd;
+}
+
+h1{
+    font-family: 'richardmurrayroman';
+    font-size: 4rem;
+    margin: 1rem;
 }
 
 .tab-selector{
-    border-bottom: 2px solid black;
+
 }
 
 ul{
@@ -46,10 +62,11 @@ a{
     display: inline-block;
     width: 100%;
     text-decoration: none;
+    border-radius: 1rem 1rem 0 0;
 }
 
 .tab{
-    height:500px;
+    height:14rem;
 }
 
 form{
