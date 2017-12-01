@@ -92,7 +92,8 @@ public class PostResource {
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
-                jcom.put("profile_pic", c.getUid().getProfilePic());
+                if(c.getUid().getProfilePic()!=null)
+                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper

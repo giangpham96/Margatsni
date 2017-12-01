@@ -65,7 +65,12 @@ public class FeedResource {
             JSONArray json = new JSONArray();
             for (Post post : posts) {
                 JSONObject jpost = new JSONObject();
-
+                
+                jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
+                jpost.put("uname", post.getUid().getUname());
+                if(post.getUid().getProfilePic()!=null)
+                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/"+post.getUid().getProfilePic());
+                
                 jpost.put("src", post.getSrc());
                 jpost.put("postId", SecureHelper
                         .encrypt(String.valueOf(post.getPostId())));
@@ -88,7 +93,8 @@ public class FeedResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    jcom.put("profile_pic", c.getUid().getProfilePic());
+                    if(c.getUid().getProfilePic()!=null)
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper
@@ -159,7 +165,12 @@ public class FeedResource {
             JSONArray json = new JSONArray();
             for (Post post : posts) {
                 JSONObject jpost = new JSONObject();
-
+                
+                jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
+                jpost.put("uname", post.getUid().getUname());
+                if(post.getUid().getProfilePic()!=null)
+                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/"+post.getUid().getProfilePic());
+                
                 jpost.put("src", post.getSrc());
                 jpost.put("postId", SecureHelper
                         .encrypt(String.valueOf(post.getPostId())));
@@ -182,7 +193,8 @@ public class FeedResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    jcom.put("profile_pic", c.getUid().getProfilePic());
+                    if(c.getUid().getProfilePic()!=null)
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper

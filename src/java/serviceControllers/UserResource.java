@@ -69,7 +69,8 @@ public class UserResource {
                 JSONObject juser = new JSONObject();
                 juser.put("uid", SecureHelper.encrypt(String.valueOf(u.getUid())));
                 juser.put("uname", u.getUname());
-                juser.put("profile_pic", u.getProfilePic());
+                if (u.getProfilePic()!=null)
+                    juser.put("profile_pic", "http://10.114.32.118/profile_pic/"+u.getProfilePic());
                 json.put(juser);
             }
             
