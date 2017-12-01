@@ -15,6 +15,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String get(
+    public Response get(
             @HeaderParam("auth-token") String authToken,
             @QueryParam("search") String search
     ) {
@@ -49,14 +50,18 @@ public class UserResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"session expired\"}")
+                            .build();
                 }
                 uid = Long.valueOf(authInfo[0]);
 
                 user = hb.getUserById(uid);
 
                 if (user == null) {
-                    return "{\"message\":\"user not found\"}";
+                    Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"user not found\"}")
+                            .build();
                 }
             }
 
@@ -74,10 +79,14 @@ public class UserResource {
                 json.put(juser);
             }
             
-            return json.toString();
+            return Response.status(Response.Status.OK)
+                            .entity(json.toString())
+                            .build();
 
         } catch (Exception ex) {
-            return "[]";
+            return Response.status(Response.Status.OK)
+                            .entity("[]")
+                            .build();
         }
     }
 }

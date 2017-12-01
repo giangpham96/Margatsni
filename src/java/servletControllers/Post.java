@@ -56,6 +56,7 @@ public class Post extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (authToken == null) {
+                response.setStatus(401);
                 out.println("{\"message\":\"must logged in first\"}");
                 return;
             }
@@ -67,6 +68,7 @@ public class Post extends HttpServlet {
 //            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
             long expired = Long.valueOf(authInfo[1]);
             if (expired < System.currentTimeMillis()) {
+                response.setStatus(401);
                 out.println("{\"message\":\"session expired\"}");
                 return;
             }
@@ -76,6 +78,7 @@ public class Post extends HttpServlet {
             
             User user = hb.getUserById(uid);
             if (user == null) {
+                response.setStatus(401);
                 out.println("{\"message\":\"user not found\"}");
                 return;
             }
@@ -90,7 +93,8 @@ public class Post extends HttpServlet {
                     caption, permission, isSharedPost, 0L);
 
             if (post == null) {
-                out.println("{\"message\":\"internal error, cannot write post\"}");
+                response.setStatus(500);
+                out.println("{\"message\":\"internal error occurs\"}");
                 return;
             }
 
@@ -139,9 +143,11 @@ public class Post extends HttpServlet {
             }
             json.put("can_like", canLike);
             json.put("can_comment", canComment);
+            
+            response.setStatus(200);
             out.println(json.toString());
         } catch (Exception ex) {
-
+            response.setStatus(500);
         }
     }
 

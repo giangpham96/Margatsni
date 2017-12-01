@@ -11,6 +11,9 @@ import javax.ejb.EJB;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import models.User;
 import org.json.JSONObject;
 
@@ -21,39 +24,48 @@ import org.json.JSONObject;
  */
 @Path("signup")
 public class SignupResource {
-    
+
     @EJB
     UserHelperBean hb;
-    
+
     @POST
-    public String post(
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response post(
             @FormParam("uname") String uname,
             @FormParam("email") String email,
             @FormParam("password") String password) {
 
         if (hb.isEmailUsed(email)) {
-            return "{\"error\":\"this email has already been used\"}";
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"message\":\"this email has already been used\"}")
+                    .build();
         }
 
         if (hb.isUsernameUsed(uname)) {
-            return "{\"error\":\"this username has already been taken\"}";
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"message\":\"this username has already been taken\"}")
+                    .build();
         }
         try {
             User user = hb.addUser(uname, email, password);
-            if (user == null)
-                return "{\"error\":\"internal error, cannot create user\"}";
-                
-//            String auth_session = SecureHelper.encrypt(String.valueOf(System.currentTimeMillis() + 600000));
-//            String auth_token = SecureHelper.encrypt(String.valueOf(user.getUid()));
+            if (user == null) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"message\":\"internal error occurs\"}")
+                        .build();
+            }
 
-            String originalAuth = user.getUid()+"::"+System.currentTimeMillis() + 600000;
+            String originalAuth = user.getUid() + "::" + System.currentTimeMillis() + 600000;
             String auth = SecureHelper.encrypt(originalAuth);
-            
-            return new JSONObject()
-                    .put("auth-token", auth)
-                    .toString();
+
+            return Response.status(Response.Status.OK)
+                    .entity(new JSONObject()
+                            .put("auth-token", auth)
+                            .toString())
+                    .build();
         } catch (Exception ex) {
-            return "{\"error\":\"internal error, cannot create user\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\":\"internal error occurs\"}")
+                    .build();
         }
     }
 

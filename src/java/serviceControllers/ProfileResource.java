@@ -17,8 +17,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import models.Comment;
 import models.Post;
 import models.User;
@@ -41,8 +43,9 @@ public class ProfileResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String get(@HeaderParam("auth-token") String authToken,
-            @QueryParam("user") String authUid,
+    @Path("/{authUid}")
+    public Response get(@HeaderParam("auth-token") String authToken,
+            @PathParam("authUid") String authUid,
             @QueryParam("page") int page) {
         try {
 
@@ -56,23 +59,27 @@ public class ProfileResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"session expired\"}")
+                            .build();
                 }
                 uid = Long.valueOf(authInfo[0]);
 
                 if (!hb.isIdValid(uid)) {
-                    return "{\"message\":\"user not found\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"user not found\"}")
+                            .build();
                 }
 
                 if (uid == userUid) {
-                    return "{\"redirect\":\"profile/me\"}";
+                    return Response.status(Response.Status.SEE_OTHER).entity("{\"message\":\"redirect to /profile/me\"}").build();
                 }
             }
 
             User user = hb.getUserById(userUid);
 
             if (user == null) {
-                return "{\"message\":\"cannot find profile\"}";
+                return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"cannot find this profile\"}").build();
             }
 
             JSONObject json = new JSONObject();
@@ -152,21 +159,23 @@ public class ProfileResource {
             postJson.put("page", page);
             postJson.put("posts", jsonArray);
             json.put("post", postJson);
-            return json.toString();
+            return Response.status(Response.Status.OK).entity(json.toString()).build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){
 //                err += "\n" +e;
 //            }
 //            err+="\n"+ex.getCause();
-            return "{\"error\":\"internal error, cannot load this profile\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\":\"internal error occurs\"}")
+                    .build();
         }
     }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("me")
-    public String getMe(@HeaderParam("auth-token") String authToken,
+    public Response getMe(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
         try {
 
@@ -178,19 +187,15 @@ public class ProfileResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"session expired\"}").build();
                 }
                 uid = Long.valueOf(authInfo[0]);
-
-                if (!hb.isIdValid(uid)) {
-                    return "{\"message\":\"user not found\"}";
-                }
             }
 
             User user = hb.getUserById(uid);
 
             if (user == null) {
-                return "{\"message\":\"cannot find profile\"}";
+                return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"user not found\"}").build();
             }
 
             JSONObject json = new JSONObject();
@@ -270,20 +275,20 @@ public class ProfileResource {
             postJson.put("page", page);
             postJson.put("posts", jsonArray);
             json.put("post", postJson);
-            return json.toString();
+            return Response.status(Response.Status.OK).entity(json.toString()).build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){
 //                err += "\n" +e;
 //            }
 //            err+="\n"+ex.getCause();
-            return "{\"error\":\"internal error, cannot load this profile\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\":\"cannot load profile\"}").build();
         }
     }
     
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public String put(@HeaderParam("auth-token") String authToken,
+    public Response put(@HeaderParam("auth-token") String authToken,
             @FormParam("fav_quote") String favQuote) {
         try {
 
@@ -295,16 +300,22 @@ public class ProfileResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"session expired\"}")
+                            .build();
                 }
                 uid = Long.valueOf(authInfo[0]);
 
                 if (!hb.isIdValid(uid)) {
-                    return "{\"message\":\"user not found\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"user not found\"}")
+                            .build();
                 }
 
             } else {
-                return "{\"message\":\"must log in first\"}";
+                return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"must logged in first\"}")
+                            .build();
             }
 
             User u = hb.getUserById(uid);
@@ -312,14 +323,18 @@ public class ProfileResource {
             
             u = hb.update(u);
            
-            return "{\"fav_quote\":\""+ favQuote +"\"}";
+            return Response.status(Response.Status.OK)
+                            .entity("{\"fav_quote\":\""+ favQuote +"\"}")
+                            .build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){
 //                err += "\n" +e;
 //            }
 //            err+="\n"+ex.getCause();
-            return "{\"error\":\"internal error, cannot load this profile\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\":\"internal error occurs\"}")
+                    .build();
         }
     }
 }

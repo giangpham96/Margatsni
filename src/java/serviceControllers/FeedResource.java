@@ -17,6 +17,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import models.Comment;
 import models.Post;
 import models.User;
@@ -39,7 +40,7 @@ public class FeedResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String get(@HeaderParam("auth-token") String authToken,
+    public Response get(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
         List<Post> posts = pb.getPostsInPage(page);
         try {
@@ -52,25 +53,30 @@ public class FeedResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"session expired\"}")
+                            .build();
                 }
                 uid = Long.valueOf(authInfo[0]);
-                
+
                 user = hb.getUserById(uid);
-                
+
                 if (user == null) {
-                    return "{\"message\":\"user not found\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"user not found\"}")
+                            .build();
                 }
             }
             JSONArray json = new JSONArray();
             for (Post post : posts) {
                 JSONObject jpost = new JSONObject();
-                
+
                 jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
                 jpost.put("uname", post.getUid().getUname());
-                if(post.getUid().getProfilePic()!=null)
-                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/"+post.getUid().getProfilePic());
-                
+                if (post.getUid().getProfilePic() != null) {
+                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
+                }
+
                 jpost.put("src", post.getSrc());
                 jpost.put("postId", SecureHelper
                         .encrypt(String.valueOf(post.getPostId())));
@@ -93,8 +99,9 @@ public class FeedResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    if(c.getUid().getProfilePic()!=null)
-                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                    if (c.getUid().getProfilePic() != null) {
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                    }
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper
@@ -111,7 +118,7 @@ public class FeedResource {
 
                 jpost.put("comments", jcomments);
                 jpost.put("likes", post.getUserCollection().size());
-                 boolean liked = false;
+                boolean liked = false;
 
                 if (post.getUserCollection().contains(user)) {
                     liked = true;
@@ -119,27 +126,31 @@ public class FeedResource {
 
                 jpost.put("liked", liked);
                 boolean canLike = true, canComment = true;
-                
+
                 if (uid == -1) {
                     canLike = false;
                     canComment = false;
                 }
                 jpost.put("can_like", canLike);
                 jpost.put("can_comment", canComment);
-                
+
                 json.put(jpost);
             }
-            return json.toString();
+            return Response.status(Response.Status.OK)
+                    .entity(json.toString())
+                    .build();
         } catch (Exception ex) {
-            return "{\"error\":\"internal error, cannot load feed "+ex.getStackTrace()[0]+"\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
 
     }
-    
+
     @GET
     @Path("/top")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getTop(@HeaderParam("auth-token") String authToken,
+    public Response getTop(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
         List<Post> posts = pb.getTopPostsInPage(page);
         try {
@@ -152,25 +163,30 @@ public class FeedResource {
 
                 long expired = Long.valueOf(authInfo[1]);
                 if (expired < System.currentTimeMillis()) {
-                    return "{\"message\":\"session expired\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"session expired\"}")
+                            .build();
                 }
                 uid = Long.valueOf(authInfo[0]);
-                
+
                 user = hb.getUserById(uid);
-                
+
                 if (user == null) {
-                    return "{\"message\":\"user not found\"}";
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("{\"message\":\"user not found\"}")
+                            .build();
                 }
             }
             JSONArray json = new JSONArray();
             for (Post post : posts) {
                 JSONObject jpost = new JSONObject();
-                
+
                 jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
                 jpost.put("uname", post.getUid().getUname());
-                if(post.getUid().getProfilePic()!=null)
-                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/"+post.getUid().getProfilePic());
-                
+                if (post.getUid().getProfilePic() != null) {
+                    jpost.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
+                }
+
                 jpost.put("src", post.getSrc());
                 jpost.put("postId", SecureHelper
                         .encrypt(String.valueOf(post.getPostId())));
@@ -193,8 +209,9 @@ public class FeedResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    if(c.getUid().getProfilePic()!=null)
-                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                    if (c.getUid().getProfilePic() != null) {
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                    }
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper
@@ -211,7 +228,7 @@ public class FeedResource {
 
                 jpost.put("comments", jcomments);
                 jpost.put("likes", post.getUserCollection().size());
-                 boolean liked = false;
+                boolean liked = false;
 
                 if (post.getUserCollection().contains(user)) {
                     liked = true;
@@ -219,25 +236,29 @@ public class FeedResource {
 
                 jpost.put("liked", liked);
                 boolean canLike = true, canComment = true;
-                
+
                 if (uid == -1) {
                     canLike = false;
                     canComment = false;
                 }
                 jpost.put("can_like", canLike);
                 jpost.put("can_comment", canComment);
-                
+
                 json.put(jpost);
             }
-            return json.toString();
+            return Response.status(Response.Status.OK)
+                    .entity(json.toString())
+                    .build();
         } catch (Exception ex) {
-            
-            String err="";
-            for(StackTraceElement e : ex.getStackTrace()){
-                err += "\n" +e;
-            }
-            err+="\n"+ex.getCause()+"\n"+posts.size();
-            return "{\"error\":\"internal error, cannot load feed "+err+"\"}";
+
+//            String err = "";
+//            for (StackTraceElement e : ex.getStackTrace()) {
+//                err += "\n" + e;
+//            }
+//            err += "\n" + ex.getCause() + "\n" + posts.size();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
     }
 }
