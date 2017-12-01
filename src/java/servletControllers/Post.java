@@ -75,7 +75,7 @@ public class Post extends HttpServlet {
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
             long uid = Long.valueOf(authInfo[0]);
-            
+
             User user = hb.getUserById(uid);
             if (user == null) {
                 response.setStatus(401);
@@ -99,6 +99,13 @@ public class Post extends HttpServlet {
             }
 
             JSONObject json = new JSONObject();
+            json.put("uid",
+                    SecureHelper
+                            .encrypt(String.valueOf(post.getUid().getUid())));
+            json.put("uname", post.getUid().getUname());
+            if (post.getUid().getProfilePic() != null) {
+                json.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
+            }
 
             json.put("src", post.getSrc());
             json.put("postId", SecureHelper
@@ -115,8 +122,9 @@ public class Post extends HttpServlet {
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
-                if(c.getUid().getProfilePic()!=null)
-                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                if (c.getUid().getProfilePic() != null) {
+                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                }
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper
@@ -143,7 +151,7 @@ public class Post extends HttpServlet {
             }
             json.put("can_like", canLike);
             json.put("can_comment", canComment);
-            
+
             response.setStatus(200);
             out.println(json.toString());
         } catch (Exception ex) {

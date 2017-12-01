@@ -72,7 +72,9 @@ public class ProfileResource {
                 }
 
                 if (uid == userUid) {
-                    return Response.status(Response.Status.SEE_OTHER).entity("{\"message\":\"redirect to /profile/me\"}").build();
+                    return Response.status(Response.Status.SEE_OTHER)
+                            .entity("{\"message\":\"redirect to /profile/me\"}")
+                            .build();
                 }
             }
 

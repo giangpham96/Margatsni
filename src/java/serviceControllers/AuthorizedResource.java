@@ -39,7 +39,7 @@ public class AuthorizedResource {
 
             if (user == null) {
                 return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"error\":\"wrong email or password\"}")
+                        .entity("{\"message\":\"wrong email or password\"}")
                         .build();
             }
 
