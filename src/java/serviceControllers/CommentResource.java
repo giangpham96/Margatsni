@@ -46,6 +46,11 @@ public class CommentResource {
             @HeaderParam("auth-token") String authToken,
             @FormParam("post") String authPost,
             @FormParam("content") String content) {
+        if (authToken == null || authPost == null || content == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
         try {
             String originalAuth = SecureHelper.decrypt(authToken);
 
@@ -78,7 +83,7 @@ public class CommentResource {
 
             if (post.getPermission() != 0) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"you don't have permission to comment\"}")
+                        .entity("{\"message\":\"permission denied\"}")
                         .build();
             }
 
@@ -113,8 +118,8 @@ public class CommentResource {
             jcom.put("owned", ownedComment);
 
             return Response.status(Response.Status.OK)
-                        .entity(jcom.toString())
-                        .build();
+                    .entity(jcom.toString())
+                    .build();
 
         } catch (Exception ex) {
 
@@ -124,8 +129,8 @@ public class CommentResource {
 //            }
 //            err+="\n"+ex.getCause();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"error\":\"internal error occurs\"}")
-                        .build();
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
     }
 
@@ -135,6 +140,12 @@ public class CommentResource {
             @HeaderParam("auth-token") String authToken,
             @FormParam("comment_id") String authComment,
             @FormParam("content") String content) {
+        
+        if (authToken == null || authComment == null || content == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
         try {
             String originalAuth = SecureHelper.decrypt(authToken);
 
@@ -165,6 +176,12 @@ public class CommentResource {
                         .build();
             }
 
+            if (c.getUid().getUid() != uid) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"permission denied\"}")
+                        .build();
+            }
+
             c.setContent(content);
 
             cb.updateComment(c);
@@ -189,19 +206,19 @@ public class CommentResource {
 
             jcom.put("owned", ownedComment);
             return Response.status(Response.Status.OK)
-                        .entity(jcom.toString())
-                        .build();
+                    .entity(jcom.toString())
+                    .build();
 
         } catch (Exception ex) {
 
-//            String err="";
-//            for(StackTraceElement e : ex.getStackTrace()){
-//                err += "\n" +e;
-//            }
-//            err+="\n"+ex.getCause();
+            String err = "";
+            for (StackTraceElement e : ex.getStackTrace()) {
+                err += "\n" + e;
+            }
+            err += "\n" + ex.getCause();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"error\":\"internal error occurs\"}")
-                        .build();
+                    .entity("{\"error\":\"internal error occurs" + err + "\"}")
+                    .build();
         }
     }
 
@@ -210,6 +227,12 @@ public class CommentResource {
     public Response delete(
             @HeaderParam("auth-token") String authToken,
             @FormParam("comment_id") String authComment) {
+        
+        if (authToken == null || authComment == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
         try {
             String originalAuth = SecureHelper.decrypt(authToken);
 
@@ -242,13 +265,17 @@ public class CommentResource {
 
             if (c.getUid().getUid() == uid) {
                 cb.deleteComment(c);
+            } else {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"permission denied\"}")
+                        .build();
             }
 
             JSONObject jcom = new JSONObject()
                     .put("message", "success");
             return Response.status(Response.Status.OK)
-                        .entity(jcom.toString())
-                        .build();
+                    .entity(jcom.toString())
+                    .build();
 
         } catch (Exception ex) {
 
@@ -258,8 +285,8 @@ public class CommentResource {
 //            }
 //            err += "\n" + ex.getCause();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"error\":\"internal error occurs\"}")
-                        .build();
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
     }
 }

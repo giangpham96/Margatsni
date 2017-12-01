@@ -35,6 +35,12 @@ public class AuthorizedResource {
     public Response post(@FormParam("email") String email,
             @FormParam("password") String password) {
         try {
+            
+            if(email==null || password==null)
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
+            
             User user = hb.getUser(email, password);
 
             if (user == null) {
@@ -65,7 +71,11 @@ public class AuthorizedResource {
     public Response get(
             @HeaderParam("auth-token") String authToken) {
         try {
-
+            if(authToken == null)
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
+                
             String originalAuth = SecureHelper.decrypt(authToken);
 
             String[] authInfo = originalAuth.split("::");

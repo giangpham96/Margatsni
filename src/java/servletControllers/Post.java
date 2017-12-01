@@ -56,8 +56,8 @@ public class Post extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (authToken == null) {
-                response.setStatus(401);
-                out.println("{\"message\":\"must logged in first\"}");
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
                 return;
             }
 
@@ -85,7 +85,13 @@ public class Post extends HttpServlet {
 
             String fileName = uid + "_" + System.currentTimeMillis() + request
                     .getPart("file").getSubmittedFileName();
-
+            
+            if (request.getPart("file")==null){
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
+                return;
+            }
+            
             request.getPart("file").write(fileName);
 
             models.Post post = pb.addPost(uid,

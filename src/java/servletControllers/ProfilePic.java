@@ -40,8 +40,8 @@ public class ProfilePic extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (authToken == null) {
-                response.setStatus(401);
-                out.println("{\"message\":\"must logged in first\"}");
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
                 return;
             }
 
@@ -69,7 +69,13 @@ public class ProfilePic extends HttpServlet {
             }
 
             String fileName = "profile_" + authInfo[0] + ".jpg";
-
+            
+            if (request.getPart("file")==null){
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
+                return;
+            }
+            
             request.getPart("file").write(fileName);
 
             user.setProfilePic(fileName);
@@ -77,7 +83,7 @@ public class ProfilePic extends HttpServlet {
             user = hb.update(user);
             response.setStatus(200);
 
-            out.println("{\"profile_pic\":\"" + user.getProfilePic() + "\"}");
+            out.println("{\"profile_pic\":\"http://10.114.32.118/profile_pic/" + user.getProfilePic() + "\"}");
 
         } catch (Exception ex) {
             response.setStatus(500);

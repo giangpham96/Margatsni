@@ -35,6 +35,12 @@ public class SignupResource {
             @FormParam("email") String email,
             @FormParam("password") String password) {
 
+        if (uname == null || email == null || password == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
+
         if (hb.isEmailUsed(email)) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"message\":\"this email has already been used\"}")
