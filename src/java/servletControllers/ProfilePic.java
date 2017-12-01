@@ -27,7 +27,7 @@ import org.json.JSONObject;
  *
  * @author conme
  */
-@WebServlet(name = "ProfilePic", urlPatterns = {"/api/profilepic"})
+@WebServlet(name = "ProfilePic", urlPatterns = {"/api/profile/profilepic"})
 @MultipartConfig(location = "/var/www/html/profile_pic")
 public class ProfilePic extends HttpServlet {
     
@@ -77,7 +77,7 @@ public class ProfilePic extends HttpServlet {
             
             user = hb.update(user);
             
-            out.println("{\"profil_pic\":\""+user.getProfilePic()+"\"}");
+            out.println("{\"profile_pic\":\""+user.getProfilePic()+"\"}");
             
         } catch (Exception ex) {
 
