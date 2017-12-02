@@ -17,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import models.Comment;
 import models.User;
 import org.json.JSONArray;
@@ -37,10 +38,17 @@ public class PostResource {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public String put(@FormParam("post") String authPost,
+    public Response put(@FormParam("post") String authPost,
             @FormParam("caption") String caption,
             @HeaderParam("auth-token") String authToken) {
         try {
+
+            if (authPost == null || caption == null || authToken == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
+            }
+
             String originalAuth = SecureHelper.decrypt(authToken);
 
             String[] authInfo = originalAuth.split("::");
@@ -48,16 +56,20 @@ public class PostResource {
 //            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
             long expired = Long.valueOf(authInfo[1]);
             if (expired < System.currentTimeMillis()) {
-                return "{\"message\":\"session expired\"}";
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
             }
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
             long uid = Long.valueOf(authInfo[0]);
-            
+
             User user = hb.getUserById(uid);
-            
-            if (user==null) {
-                return "{\"message\":\"user not found\"}";
+
+            if (user == null) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
             }
 
             long postid = Long.valueOf(SecureHelper.decrypt(authPost));
@@ -65,18 +77,26 @@ public class PostResource {
             models.Post post = pb.getPostById(postid);
 
             if (post == null) {
-                return "{\"message\":\"post not found\"}";
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"message\":\"post not found\"}")
+                        .build();
             }
 
             if (post.getUid().getUid() != uid) {
-                return "{\"message\":\"permission denied\"}";
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"permission denied\"}")
+                        .build();
             }
 
             post.setCaption(caption);
             post = pb.update(post);
 
             JSONObject json = new JSONObject();
-
+            json.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
+            json.put("uname", post.getUid().getUname());
+            if (post.getUid().getProfilePic() != null) {
+                json.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
+            }
             json.put("src", post.getSrc());
             json.put("postId", SecureHelper
                     .encrypt(String.valueOf(post.getPostId())));
@@ -92,7 +112,9 @@ public class PostResource {
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
-                jcom.put("profile_pic", c.getUid().getProfilePic());
+                if (c.getUid().getProfilePic() != null) {
+                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                }
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper
@@ -102,15 +124,15 @@ public class PostResource {
 
             json.put("comments", jcomments);
             json.put("likes", post.getUserCollection().size());
-            
+
             boolean liked = false;
-            
+
             if (post.getUserCollection().contains(user)) {
                 liked = true;
             }
 
             json.put("liked", liked);
-            
+
             boolean canLike = true, canComment = true;
 
             if (uid == -1) {
@@ -119,17 +141,26 @@ public class PostResource {
             }
             json.put("can_like", canLike);
             json.put("can_comment", canComment);
-            return json.toString();
+            return Response.status(Response.Status.OK)
+                    .entity(json.toString())
+                    .build();
         } catch (Exception ex) {
-            return "{\"error\":\"internal error, cannot update post\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public String delete(@FormParam("post") String authPost,
+    public Response delete(@FormParam("post") String authPost,
             @HeaderParam("auth-token") String authToken) {
         try {
+            if (authPost == null || authToken == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
+            }
             String originalAuth = SecureHelper.decrypt(authToken);
 
             String[] authInfo = originalAuth.split("::");
@@ -137,14 +168,18 @@ public class PostResource {
 //            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
             long expired = Long.valueOf(authInfo[1]);
             if (expired < System.currentTimeMillis()) {
-                return "{\"message\":\"session expired\"}";
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
             }
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
             long uid = Long.valueOf(authInfo[0]);
 
             if (!hb.isIdValid(uid)) {
-                return "{\"message\":\"user not found\"}";
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
             }
 
             long postid = Long.valueOf(SecureHelper.decrypt(authPost));
@@ -152,18 +187,26 @@ public class PostResource {
             models.Post post = pb.getPostById(postid);
 
             if (post == null) {
-                return "{\"message\":\"post not found\"}";
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"message\":\"post not found\"}")
+                        .build();
             }
 
             if (post.getUid().getUid() != uid) {
-                return "{\"message\":\"permission denied\"}";
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"permission denied\"}")
+                        .build();
             }
 
             pb.delete(post);
 
-            return "{\"message\":\"success\"}";
+            return Response.status(Response.Status.OK)
+                    .entity("{\"message\":\"success\"}")
+                    .build();
         } catch (Exception ex) {
-            return "{\"error\":\"internal error, cannot update post\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
         }
     }
 }

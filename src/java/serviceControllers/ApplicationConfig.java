@@ -36,6 +36,7 @@ public class ApplicationConfig extends Application {
         resources.add(serviceControllers.PostResource.class);
         resources.add(serviceControllers.ProfileResource.class);
         resources.add(serviceControllers.SignupResource.class);
+        resources.add(serviceControllers.UserResource.class);
     }
     
 }

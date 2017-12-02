@@ -56,7 +56,8 @@ public class Post extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (authToken == null) {
-                out.println("{\"message\":\"must logged in first\"}");
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
                 return;
             }
 
@@ -67,22 +68,30 @@ public class Post extends HttpServlet {
 //            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
             long expired = Long.valueOf(authInfo[1]);
             if (expired < System.currentTimeMillis()) {
+                response.setStatus(401);
                 out.println("{\"message\":\"session expired\"}");
                 return;
             }
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
             long uid = Long.valueOf(authInfo[0]);
-            
+
             User user = hb.getUserById(uid);
             if (user == null) {
+                response.setStatus(401);
                 out.println("{\"message\":\"user not found\"}");
                 return;
             }
 
             String fileName = uid + "_" + System.currentTimeMillis() + request
                     .getPart("file").getSubmittedFileName();
-
+            
+            if (request.getPart("file")==null){
+                response.setStatus(400);
+                out.println("{\"message\":\"bad request\"}");
+                return;
+            }
+            
             request.getPart("file").write(fileName);
 
             models.Post post = pb.addPost(uid,
@@ -90,11 +99,19 @@ public class Post extends HttpServlet {
                     caption, permission, isSharedPost, 0L);
 
             if (post == null) {
-                out.println("{\"message\":\"internal error, cannot write post\"}");
+                response.setStatus(500);
+                out.println("{\"message\":\"internal error occurs\"}");
                 return;
             }
 
             JSONObject json = new JSONObject();
+            json.put("uid",
+                    SecureHelper
+                            .encrypt(String.valueOf(post.getUid().getUid())));
+            json.put("uname", post.getUid().getUname());
+            if (post.getUid().getProfilePic() != null) {
+                json.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
+            }
 
             json.put("src", post.getSrc());
             json.put("postId", SecureHelper
@@ -111,7 +128,9 @@ public class Post extends HttpServlet {
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
-                jcom.put("profile_pic", c.getUid().getProfilePic());
+                if (c.getUid().getProfilePic() != null) {
+                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                }
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper
@@ -138,9 +157,11 @@ public class Post extends HttpServlet {
             }
             json.put("can_like", canLike);
             json.put("can_comment", canComment);
+
+            response.setStatus(200);
             out.println(json.toString());
         } catch (Exception ex) {
-
+            response.setStatus(500);
         }
     }
 

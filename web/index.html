@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>first</title>
+        <meta charset="utf-8">
+        <title>
+            Welcome to Margatsni!
+        </title>
+        <link rel="stylesheet" href="./css/login.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
     </head>
     <body>
-        <script src="javascript/index.js"></script>
-        <h1>Sign Up</h1>
-        <form id="signup" method="post" action="api/signup">
-            <input type="text" name="uname" required placeholder="username"><br>
-            <input type="email" name="email" required placeholder="email"><br>
-            <input type="password" name="password" required placeholder="password"><br>
-            <input type="password" name="repass" required placeholder="re-type password"><br>
-            <input type="submit" value="Sign Up">
-        </form>
-        <br>
-        <h1>Log In</h1>
-        <form id="login">
-            <input type="email" name="email" required placeholder="email"><br>
-            <input type="password" name="password" required placeholder="password"><br>
-            <input type="submit" value="Log In"><br>
-            <p></p>
-        </form>
+        <div class="background-image">    
+            
+        </div>
+        <div class="mainbox">           
+            <div class="loginbox">
+                    <h1 class="logo">Margatsni</h1>
+                    <div>
+                        <p>Need an Account? <a href="">Sign Up</a></p>                        
+                    </div>
+                    <div>
+                        <form id="login" method="post">                
+                        <input id="email" placeholder="Email" type="email"><br>                
+                        <input id="password" placeholder="Password" type='password'><br>
+                        <input type="submit" placeholder="Sign In">
+                        </form>
+                    </div>                    
+                </div>
+        </div> 
+        <script src="./javascript/login.js"></script>
     </body>
 </html>
