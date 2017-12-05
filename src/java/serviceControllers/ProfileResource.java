@@ -48,6 +48,11 @@ public class ProfileResource {
             @PathParam("authUid") String authUid,
             @QueryParam("page") int page) {
         try {
+            if (authUid == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
+            }
 
             long userUid = Long.valueOf(SecureHelper.decrypt(authUid));
 
@@ -89,8 +94,9 @@ public class ProfileResource {
             json.put("uid", authUid);
             json.put("uname", user.getUname());
             json.put("fav_quote", user.getFavQuote());
-            if(user.getProfilePic()!=null)
-                json.put("profile_pic", "http://10.114.32.118/profile_pic/"+user.getProfilePic());
+            if (user.getProfilePic() != null) {
+                json.put("profile_pic", "http://10.114.32.118/profile_pic/" + user.getProfilePic());
+            }
 
             JSONArray jsonArray = new JSONArray();
 
@@ -120,8 +126,9 @@ public class ProfileResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    if (c.getUid().getProfilePic()!=null)
-                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                    if (c.getUid().getProfilePic() != null) {
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                    }
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper
@@ -173,7 +180,7 @@ public class ProfileResource {
                     .build();
         }
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("me")
@@ -181,18 +188,21 @@ public class ProfileResource {
             @QueryParam("page") int page) {
         try {
 
-            long uid = -1;
-            if (authToken != null) {
-                String originalAuth = SecureHelper.decrypt(authToken);
-
-                String[] authInfo = originalAuth.split("::");
-
-                long expired = Long.valueOf(authInfo[1]);
-                if (expired < System.currentTimeMillis()) {
-                    return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"session expired\"}").build();
-                }
-                uid = Long.valueOf(authInfo[0]);
+            if (authToken == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
             }
+            long uid = -1;
+            String originalAuth = SecureHelper.decrypt(authToken);
+
+            String[] authInfo = originalAuth.split("::");
+
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"session expired\"}").build();
+            }
+            uid = Long.valueOf(authInfo[0]);
 
             User user = hb.getUserById(uid);
 
@@ -205,8 +215,9 @@ public class ProfileResource {
             json.put("uid", SecureHelper.encrypt(String.valueOf(uid)));
             json.put("uname", user.getUname());
             json.put("fav_quote", user.getFavQuote());
-            if(user.getProfilePic()!=null)
-                json.put("profile_pic", "http://10.114.32.118/profile_pic/"+user.getProfilePic());
+            if (user.getProfilePic() != null) {
+                json.put("profile_pic", "http://10.114.32.118/profile_pic/" + user.getProfilePic());
+            }
 
             JSONArray jsonArray = new JSONArray();
 
@@ -236,8 +247,9 @@ public class ProfileResource {
                             SecureHelper
                                     .encrypt(String.valueOf(c.getUid().getUid())));
                     jcom.put("uname", c.getUid().getUname());
-                    if (c.getUid().getProfilePic()!=null)
-                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                    if (c.getUid().getProfilePic() != null) {
+                        jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                    }
                     jcom.put("content", c.getContent());
                     jcom.put("timestamp", c.getTimestamp());
                     jcom.put("comment_id", SecureHelper
@@ -287,7 +299,7 @@ public class ProfileResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\":\"cannot load profile\"}").build();
         }
     }
-    
+
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@HeaderParam("auth-token") String authToken,
@@ -315,19 +327,19 @@ public class ProfileResource {
                 }
 
             } else {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"must logged in first\"}")
-                            .build();
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"bad request\"}")
+                        .build();
             }
 
             User u = hb.getUserById(uid);
             u.setFavQuote(favQuote);
-            
+
             u = hb.update(u);
-           
+
             return Response.status(Response.Status.OK)
-                            .entity("{\"fav_quote\":\""+ favQuote +"\"}")
-                            .build();
+                    .entity("{\"fav_quote\":\"" + favQuote + "\"}")
+                    .build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){

@@ -71,7 +71,7 @@ public class AuthorizedResource {
     public Response get(
             @HeaderParam("auth-token") String authToken) {
         try {
-            if(authToken == null)
+            if(authToken == null || authToken.equals(""))
                 return Response.status(Response.Status.UNAUTHORIZED)
                         .entity("{\"message\":\"user not found\"}")
                         .build();

@@ -66,7 +66,7 @@ public class CommentHelperBean {
     }
 
     public void deleteComment(Comment c) {
-        Comment toBeRemoved = em.merge(c);
-        em.remove(toBeRemoved);
+        
+        em.remove(em.merge(c));
     }
 }
