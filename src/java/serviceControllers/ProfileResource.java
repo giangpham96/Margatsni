@@ -10,6 +10,8 @@ import dataAccessObjects.SecureHelper;
 import dataAccessObjects.UserHelperBean;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
@@ -43,54 +45,67 @@ public class ProfileResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{authUid}")
+    @Path("/{uid}")
     public Response get(@HeaderParam("auth-token") String authToken,
-            @PathParam("authUid") String authUid,
+            @PathParam("uid") String authUid,
             @QueryParam("page") int page) {
+        if (authUid == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
+
+        long userUid;
         try {
-            if (authUid == null) {
+            userUid = Long.valueOf(SecureHelper.decrypt(authUid));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid user id\"}")
+                    .build();
+        }
+
+        long uid = -1;
+        if (authToken != null) {
+            String originalAuth;
+
+            try {
+                originalAuth = SecureHelper.decrypt(authToken);
+            } catch (Exception ex) {
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"bad request\"}")
+                        .entity("{\"error\":\"invalid token\"}")
+                        .build();
+            }
+            String[] authInfo = originalAuth.split("::");
+
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
+            }
+            uid = Long.valueOf(authInfo[0]);
+
+            if (!hb.isIdValid(uid)) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
                         .build();
             }
 
-            long userUid = Long.valueOf(SecureHelper.decrypt(authUid));
-
-            long uid = -1;
-            if (authToken != null) {
-                String originalAuth = SecureHelper.decrypt(authToken);
-
-                String[] authInfo = originalAuth.split("::");
-
-                long expired = Long.valueOf(authInfo[1]);
-                if (expired < System.currentTimeMillis()) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"session expired\"}")
-                            .build();
-                }
-                uid = Long.valueOf(authInfo[0]);
-
-                if (!hb.isIdValid(uid)) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"user not found\"}")
-                            .build();
-                }
-
-                if (uid == userUid) {
-                    return Response.status(Response.Status.SEE_OTHER)
-                            .entity("{\"message\":\"redirect to /profile/me\"}")
-                            .build();
-                }
+            if (uid == userUid) {
+                return Response.status(Response.Status.SEE_OTHER)
+                        .entity("{\"message\":\"redirect to /profile/me\"}")
+                        .build();
             }
+        }
 
-            User user = hb.getUserById(userUid);
+        User user = hb.getUserById(userUid);
 
-            if (user == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"cannot find this profile\"}").build();
-            }
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"cannot find this profile\"}").build();
+        }
 
-            JSONObject json = new JSONObject();
-
+        JSONObject json = new JSONObject();
+        try {
             json.put("uid", authUid);
             json.put("uname", user.getUname());
             json.put("fav_quote", user.getFavQuote());
@@ -168,7 +183,6 @@ public class ProfileResource {
             postJson.put("page", page);
             postJson.put("posts", jsonArray);
             json.put("post", postJson);
-            return Response.status(Response.Status.OK).entity(json.toString()).build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){
@@ -179,6 +193,8 @@ public class ProfileResource {
                     .entity("{\"message\":\"internal error occurs\"}")
                     .build();
         }
+        return Response.status(Response.Status.OK).entity(json.toString()).build();
+
     }
 
     @GET
@@ -186,32 +202,40 @@ public class ProfileResource {
     @Path("me")
     public Response getMe(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
+
+        if (authToken == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
+        long uid = -1;
+        String originalAuth;
+
         try {
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
 
-            if (authToken == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"bad request\"}")
-                        .build();
-            }
-            long uid = -1;
-            String originalAuth = SecureHelper.decrypt(authToken);
+        String[] authInfo = originalAuth.split("::");
 
-            String[] authInfo = originalAuth.split("::");
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"session expired\"}").build();
+        }
+        uid = Long.valueOf(authInfo[0]);
 
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"session expired\"}").build();
-            }
-            uid = Long.valueOf(authInfo[0]);
+        User user = hb.getUserById(uid);
 
-            User user = hb.getUserById(uid);
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"user not found\"}").build();
+        }
 
-            if (user == null) {
-                return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\":\"user not found\"}").build();
-            }
+        JSONObject json = new JSONObject();
 
-            JSONObject json = new JSONObject();
-
+        try {
             json.put("uid", SecureHelper.encrypt(String.valueOf(uid)));
             json.put("uname", user.getUname());
             json.put("fav_quote", user.getFavQuote());
@@ -289,57 +313,6 @@ public class ProfileResource {
             postJson.put("page", page);
             postJson.put("posts", jsonArray);
             json.put("post", postJson);
-            return Response.status(Response.Status.OK).entity(json.toString()).build();
-        } catch (Exception ex) {
-//            String err="";
-//            for(StackTraceElement e : ex.getStackTrace()){
-//                err += "\n" +e;
-//            }
-//            err+="\n"+ex.getCause();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\":\"cannot load profile\"}").build();
-        }
-    }
-
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response put(@HeaderParam("auth-token") String authToken,
-            @FormParam("fav_quote") String favQuote) {
-        try {
-
-            long uid = -1;
-            if (authToken != null) {
-                String originalAuth = SecureHelper.decrypt(authToken);
-
-                String[] authInfo = originalAuth.split("::");
-
-                long expired = Long.valueOf(authInfo[1]);
-                if (expired < System.currentTimeMillis()) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"session expired\"}")
-                            .build();
-                }
-                uid = Long.valueOf(authInfo[0]);
-
-                if (!hb.isIdValid(uid)) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"user not found\"}")
-                            .build();
-                }
-
-            } else {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"bad request\"}")
-                        .build();
-            }
-
-            User u = hb.getUserById(uid);
-            u.setFavQuote(favQuote);
-
-            u = hb.update(u);
-
-            return Response.status(Response.Status.OK)
-                    .entity("{\"fav_quote\":\"" + favQuote + "\"}")
-                    .build();
         } catch (Exception ex) {
 //            String err="";
 //            for(StackTraceElement e : ex.getStackTrace()){
@@ -350,5 +323,58 @@ public class ProfileResource {
                     .entity("{\"message\":\"internal error occurs\"}")
                     .build();
         }
+        return Response.status(Response.Status.OK)
+                .entity(json.toString())
+                .build();
+
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response put(@HeaderParam("auth-token") String authToken,
+            @FormParam("fav_quote") String favQuote) {
+
+        long uid = -1;
+        if (authToken != null) {
+            String originalAuth;
+
+            try {
+                originalAuth = SecureHelper.decrypt(authToken);
+            } catch (Exception ex) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"error\":\"invalid token\"}")
+                        .build();
+            }
+
+            String[] authInfo = originalAuth.split("::");
+
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
+            }
+            uid = Long.valueOf(authInfo[0]);
+
+            if (!hb.isIdValid(uid)) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
+            }
+
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
+
+        User u = hb.getUserById(uid);
+        u.setFavQuote(favQuote);
+
+        u = hb.update(u);
+
+        return Response.status(Response.Status.OK)
+                .entity("{\"fav_quote\":\"" + favQuote + "\"}")
+                .build();
     }
 }

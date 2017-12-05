@@ -28,7 +28,7 @@ public class SecureHelper {
             'J','A','K','K'
         };
 
-    public static String encrypt(String Data) throws Exception {
+    public static String encrypt(String Data) throws Exception{
         Key key = generateKey();
         Cipher c = Cipher.getInstance(ALGO);
         c.init(Cipher.ENCRYPT_MODE, key);
@@ -46,7 +46,7 @@ public class SecureHelper {
         String decryptedValue = new String(decValue);
         return decryptedValue;
     }
-    private static Key generateKey() throws Exception {
+    private static Key generateKey() {
         Key key = new SecretKeySpec(KEY, ALGO);
         return key;
     }

@@ -41,57 +41,72 @@ public class PostResource {
     public Response put(@FormParam("post") String authPost,
             @FormParam("caption") String caption,
             @HeaderParam("auth-token") String authToken) {
+
+        if (authPost == null || caption == null || authToken == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
+                    .build();
+        }
+
+        String originalAuth;
+
         try {
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
 
-            if (authPost == null || caption == null || authToken == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"bad request\"}")
-                        .build();
-            }
-
-            String originalAuth = SecureHelper.decrypt(authToken);
-
-            String[] authInfo = originalAuth.split("::");
+        String[] authInfo = originalAuth.split("::");
 
 //            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"session expired\"}")
-                        .build();
-            }
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
 
 //            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
-            long uid = Long.valueOf(authInfo[0]);
+        long uid = Long.valueOf(authInfo[0]);
 
-            User user = hb.getUserById(uid);
+        User user = hb.getUserById(uid);
 
-            if (user == null) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"user not found\"}")
-                        .build();
-            }
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
 
-            long postid = Long.valueOf(SecureHelper.decrypt(authPost));
+        long postId;
+        try {
+            postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid post id\"}")
+                    .build();
+        }
 
-            models.Post post = pb.getPostById(postid);
+        models.Post post = pb.getPostById(postId);
 
-            if (post == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"post not found\"}")
-                        .build();
-            }
+        if (post == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"post not found\"}")
+                    .build();
+        }
 
-            if (post.getUid().getUid() != uid) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"permission denied\"}")
-                        .build();
-            }
+        if (post.getUid().getUid() != uid) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"message\":\"permission denied\"}")
+                    .build();
+        }
 
-            post.setCaption(caption);
-            post = pb.update(post);
+        post.setCaption(caption);
+        post = pb.update(post);
 
-            JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
+        try {
             json.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
             json.put("uname", post.getUid().getUname());
             if (post.getUid().getProfilePic() != null) {
@@ -141,72 +156,82 @@ public class PostResource {
             }
             json.put("can_like", canLike);
             json.put("can_comment", canComment);
-            return Response.status(Response.Status.OK)
-                    .entity(json.toString())
-                    .build();
+
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\":\"internal error occurs\"}")
                     .build();
         }
+        return Response.status(Response.Status.OK)
+                .entity(json.toString())
+                .build();
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@FormParam("post") String authPost,
             @HeaderParam("auth-token") String authToken) {
-        try {
-            if (authPost == null || authToken == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"bad request\"}")
-                        .build();
-            }
-            String originalAuth = SecureHelper.decrypt(authToken);
-
-            String[] authInfo = originalAuth.split("::");
-
-//            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"session expired\"}")
-                        .build();
-            }
-
-//            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
-            long uid = Long.valueOf(authInfo[0]);
-
-            if (!hb.isIdValid(uid)) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"user not found\"}")
-                        .build();
-            }
-
-            long postid = Long.valueOf(SecureHelper.decrypt(authPost));
-
-            models.Post post = pb.getPostById(postid);
-
-            if (post == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"post not found\"}")
-                        .build();
-            }
-
-            if (post.getUid().getUid() != uid) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"permission denied\"}")
-                        .build();
-            }
-
-            pb.delete(post);
-
-            return Response.status(Response.Status.OK)
-                    .entity("{\"message\":\"success\"}")
-                    .build();
-        } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"internal error occurs\"}")
+        if (authPost == null || authToken == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"bad request\"}")
                     .build();
         }
+        String originalAuth;
+
+        try {
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
+
+        String[] authInfo = originalAuth.split("::");
+
+//            long expired = Long.valueOf(SecureHelper.decrypt(authSession));
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
+
+//            long uid = Long.valueOf(SecureHelper.decrypt(authToken));
+        long uid = Long.valueOf(authInfo[0]);
+
+        if (!hb.isIdValid(uid)) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
+
+        long postId;
+        try {
+            postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid post id\"}")
+                    .build();
+        }
+
+        models.Post post = pb.getPostById(postId);
+
+        if (post == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"post not found\"}")
+                    .build();
+        }
+
+        if (post.getUid().getUid() != uid) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"message\":\"permission denied\"}")
+                    .build();
+        }
+
+        pb.delete(post);
+
+        return Response.status(Response.Status.OK)
+                .entity("{\"message\":\"success\"}")
+                .build();
     }
 }

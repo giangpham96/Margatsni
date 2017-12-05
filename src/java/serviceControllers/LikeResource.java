@@ -45,47 +45,61 @@ public class LikeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response post(@FormParam("post") String authPost,
             @HeaderParam("auth-token") String authToken) {
-        if(authPost == null || authToken==null) {
+        if (authPost == null || authToken == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
         }
+        String originalAuth;
         try {
-            String originalAuth = SecureHelper.decrypt(authToken);
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
 
-            String[] authInfo = originalAuth.split("::");
+        String[] authInfo = originalAuth.split("::");
 
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"session expired\"}")
-                            .build();
-            }
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
 
-            long uid = Long.valueOf(authInfo[0]);
+        long uid = Long.valueOf(authInfo[0]);
 
-            User user = hb.getUserById(uid);
+        User user = hb.getUserById(uid);
 
-            if (user == null) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"user not found\"}")
-                            .build();
-            }
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
 
-            long postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        long postId;
+        try {
+            postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid post id\"}")
+                    .build();
+        }
 
-            Post post = pb.getPostById(postId);
+        Post post = pb.getPostById(postId);
 
-            if (post == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                            .entity("{\"message\":\"post not found\"}")
-                            .build();
-            }
+        if (post == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"post not found\"}")
+                    .build();
+        }
 
-            post = hb.like(user, post);
+        post = hb.like(user, post);
 
-            JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
 
+        try {
             json.put("src", post.getSrc());
             json.put("postId", SecureHelper
                     .encrypt(String.valueOf(post.getPostId())));
@@ -101,8 +115,9 @@ public class LikeResource {
                         SecureHelper
                                 .encrypt(String.valueOf(c.getUid().getUid())));
                 jcom.put("uname", c.getUid().getUname());
-                if(c.getUid().getProfilePic()!=null)
-                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/"+c.getUid().getProfilePic());
+                if (c.getUid().getProfilePic() != null) {
+                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+                }
                 jcom.put("content", c.getContent());
                 jcom.put("timestamp", c.getTimestamp());
                 jcom.put("comment_id", SecureHelper
@@ -112,25 +127,15 @@ public class LikeResource {
 
             json.put("comments", jcomments);
 
-//            JSONArray jlikes = new JSONArray();
-//            for (User u : post.getUserCollection()) {
-//                JSONObject jlike = new JSONObject();
-//                jlike.put("uid",
-//                        SecureHelper
-//                                .encrypt(String.valueOf(u.getUid())));
-//                jlike.put("uname", u.getUname());
-//                jlike.put("profile_pic", u.getProfilePic());
-//                jcomments.put(jlike);
-//            }
             json.put("likes", post.getUserCollection().size());
 
-            return Response.status(Response.Status.OK)
-                            .entity(json.toString())
-                            .build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\":\"internal error occurs\"}")
                     .build();
         }
+        return Response.status(Response.Status.OK)
+                .entity(json.toString())
+                .build();
     }
 }

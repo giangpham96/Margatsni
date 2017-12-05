@@ -10,6 +10,8 @@ import dataAccessObjects.SecureHelper;
 import dataAccessObjects.UserHelperBean;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -43,35 +45,43 @@ public class FeedResource {
     public Response get(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
         List<Post> posts = pb.getPostsInPage(page);
-        try {
-            long uid = -1;
-            User user = new User(-1L);
-            if (authToken != null) {
-                String originalAuth = SecureHelper.decrypt(authToken);
-
-                String[] authInfo = originalAuth.split("::");
-
-                long expired = Long.valueOf(authInfo[1]);
-                if (expired < System.currentTimeMillis()) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"session expired\"}")
-                            .build();
-                }
-                uid = Long.valueOf(authInfo[0]);
-
-                user = hb.getUserById(uid);
-
-                if (user == null) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"user not found\"}")
-                            .build();
-                }
+        long uid = -1;
+        User user = new User(-1L);
+        if (authToken != null) {
+            String originalAuth;
+            try {
+                originalAuth = SecureHelper.decrypt(authToken);
+            } catch (Exception ex) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"error\":\"invalid token\"}")
+                        .build();
             }
-            JSONArray json = new JSONArray();
-            for (Post post : posts) {
-                JSONObject jpost = new JSONObject();
 
+            String[] authInfo = originalAuth.split("::");
+
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
+            }
+            uid = Long.valueOf(authInfo[0]);
+
+            user = hb.getUserById(uid);
+
+            if (user == null) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
+            }
+        }
+        JSONArray json = new JSONArray();
+        for (Post post : posts) {
+            JSONObject jpost = new JSONObject();
+
+            try {
                 jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
+
                 jpost.put("uname", post.getUid().getUname());
                 if (post.getUid().getProfilePic() != null) {
                     jpost.put("profile_pic", "http://10.114.32.118/profile_pic/" + post.getUid().getProfilePic());
@@ -133,17 +143,18 @@ public class FeedResource {
                 }
                 jpost.put("can_like", canLike);
                 jpost.put("can_comment", canComment);
-
-                json.put(jpost);
+            } catch (Exception ex) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"error\":\"internal error occurs\"}")
+                        .build();
             }
-            return Response.status(Response.Status.OK)
-                    .entity(json.toString())
-                    .build();
-        } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"internal error occurs\"}")
-                    .build();
+            json.put(jpost);
         }
+        return Response.status(Response.Status.OK)
+                .entity(json.toString())
+                .build();
+//        } catch (Exception ex) 
+//        }
 
     }
 
@@ -153,34 +164,40 @@ public class FeedResource {
     public Response getTop(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
         List<Post> posts = pb.getTopPostsInPage(page);
-        try {
-            long uid = -1;
-            User user = new User(-1L);
-            if (authToken != null) {
-                String originalAuth = SecureHelper.decrypt(authToken);
-
-                String[] authInfo = originalAuth.split("::");
-
-                long expired = Long.valueOf(authInfo[1]);
-                if (expired < System.currentTimeMillis()) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"session expired\"}")
-                            .build();
-                }
-                uid = Long.valueOf(authInfo[0]);
-
-                user = hb.getUserById(uid);
-
-                if (user == null) {
-                    return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("{\"message\":\"user not found\"}")
-                            .build();
-                }
+        long uid = -1;
+        User user = new User(-1L);
+        if (authToken != null) {
+            String originalAuth;
+            try {
+                originalAuth = SecureHelper.decrypt(authToken);
+            } catch (Exception ex) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"error\":\"invalid token\"}")
+                        .build();
             }
-            JSONArray json = new JSONArray();
-            for (Post post : posts) {
-                JSONObject jpost = new JSONObject();
 
+            String[] authInfo = originalAuth.split("::");
+
+            long expired = Long.valueOf(authInfo[1]);
+            if (expired < System.currentTimeMillis()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"session expired\"}")
+                        .build();
+            }
+            uid = Long.valueOf(authInfo[0]);
+
+            user = hb.getUserById(uid);
+
+            if (user == null) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"message\":\"user not found\"}")
+                        .build();
+            }
+        }
+        JSONArray json = new JSONArray();
+        for (Post post : posts) {
+            JSONObject jpost = new JSONObject();
+            try {
                 jpost.put("uid", SecureHelper.encrypt(String.valueOf(post.getUid().getUid())));
                 jpost.put("uname", post.getUid().getUname());
                 if (post.getUid().getProfilePic() != null) {
@@ -243,22 +260,26 @@ public class FeedResource {
                 }
                 jpost.put("can_like", canLike);
                 jpost.put("can_comment", canComment);
-
-                json.put(jpost);
+            } catch (Exception ex) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("{\"error\":\"internal error occurs\"}")
+                        .build();
             }
-            return Response.status(Response.Status.OK)
-                    .entity(json.toString())
-                    .build();
-        } catch (Exception ex) {
-
-//            String err = "";
-//            for (StackTraceElement e : ex.getStackTrace()) {
-//                err += "\n" + e;
-//            }
-//            err += "\n" + ex.getCause() + "\n" + posts.size();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"internal error occurs\"}")
-                    .build();
+            json.put(jpost);
         }
+        return Response.status(Response.Status.OK)
+                .entity(json.toString())
+                .build();
+//        } catch (Exception ex) {
+//
+////            String err = "";
+////            for (StackTraceElement e : ex.getStackTrace()) {
+////                err += "\n" + e;
+////            }
+////            err += "\n" + ex.getCause() + "\n" + posts.size();
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+//                    .entity("{\"error\":\"internal error occurs\"}")
+//                    .build();
+//        }
     }
 }

@@ -9,6 +9,8 @@ import dataAccessObjects.CommentHelperBean;
 import dataAccessObjects.PostHelperBean;
 import dataAccessObjects.SecureHelper;
 import dataAccessObjects.UserHelperBean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
@@ -21,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import models.Comment;
 import models.Post;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -51,51 +54,66 @@ public class CommentResource {
                     .entity("{\"message\":\"bad request\"}")
                     .build();
         }
+        String originalAuth;
+
         try {
-            String originalAuth = SecureHelper.decrypt(authToken);
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
 
-            String[] authInfo = originalAuth.split("::");
+        String[] authInfo = originalAuth.split("::");
 
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"session expired\"}")
-                        .build();
-            }
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
 
-            long uid = Long.valueOf(authInfo[0]);
+        long uid = Long.valueOf(authInfo[0]);
 
-            if (!hb.isIdValid(uid)) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"user not found\"}")
-                        .build();
-            }
+        if (!hb.isIdValid(uid)) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
 
-            long postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        long postId;
+        try {
+            postId = Long.valueOf(SecureHelper.decrypt(authPost));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid post id\"}")
+                    .build();
+        }
 
-            Post post = pb.getPostById(postId);
+        Post post = pb.getPostById(postId);
 
-            if (post == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"post not found\"}")
-                        .build();
-            }
+        if (post == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"post not found\"}")
+                    .build();
+        }
 
-            if (post.getPermission() != 0) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"permission denied\"}")
-                        .build();
-            }
+        if (post.getPermission() != 0) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"message\":\"permission denied\"}")
+                    .build();
+        }
 
-            Comment c = cb.addComment(uid, postId, content);
+        Comment c = cb.addComment(uid, postId, content);
 
-            if (c == null) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"error\":\"internal error occurs\"}")
-                        .build();
-            }
+        if (c == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"internal error occurs\"}")
+                    .build();
+        }
 
-            JSONObject jcom = new JSONObject();
+        JSONObject jcom = new JSONObject();
+        try {
             jcom.put("uid",
                     SecureHelper
                             .encrypt(String.valueOf(c.getUid().getUid())));
@@ -116,22 +134,15 @@ public class CommentResource {
             }
 
             jcom.put("owned", ownedComment);
-
-            return Response.status(Response.Status.OK)
-                    .entity(jcom.toString())
-                    .build();
-
         } catch (Exception ex) {
-
-//            String err="";
-//            for(StackTraceElement e : ex.getStackTrace()){
-//                err += "\n" +e;
-//            }
-//            err+="\n"+ex.getCause();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\":\"internal error occurs\"}")
                     .build();
         }
+
+        return Response.status(Response.Status.OK)
+                .entity(jcom.toString())
+                .build();
     }
 
     @PUT
@@ -140,53 +151,68 @@ public class CommentResource {
             @HeaderParam("auth-token") String authToken,
             @FormParam("comment_id") String authComment,
             @FormParam("content") String content) {
-        
+
         if (authToken == null || authComment == null || content == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
         }
+        String originalAuth;
         try {
-            String originalAuth = SecureHelper.decrypt(authToken);
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
+                    .build();
+        }
 
-            String[] authInfo = originalAuth.split("::");
+        String[] authInfo = originalAuth.split("::");
 
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"session expired\"}")
-                        .build();
-            }
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
 
-            long uid = Long.valueOf(authInfo[0]);
+        long uid = Long.valueOf(authInfo[0]);
 
-            if (!hb.isIdValid(uid)) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"user not found\"}")
-                        .build();
-            }
+        if (!hb.isIdValid(uid)) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
 
-            long commentId = Long.valueOf(SecureHelper.decrypt(authComment));
+        long commentId;
+        try {
+            commentId = Long.valueOf(SecureHelper.decrypt(authComment));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid comment id\"}")
+                    .build();
+        }
 
-            Comment c = cb.getCommentById(commentId);
+        Comment c = cb.getCommentById(commentId);
 
-            if (c == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"comment not found\"}")
-                        .build();
-            }
+        if (c == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"comment not found\"}")
+                    .build();
+        }
 
-            if (c.getUid().getUid() != uid) {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"permission denied\"}")
-                        .build();
-            }
+        if (c.getUid().getUid() != uid) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"message\":\"permission denied\"}")
+                    .build();
+        }
 
-            c.setContent(content);
+        c.setContent(content);
 
-            cb.updateComment(c);
+        cb.updateComment(c);
 
-            JSONObject jcom = new JSONObject();
+        JSONObject jcom;
+        try {
+            jcom = new JSONObject();
             jcom.put("uid",
                     SecureHelper
                             .encrypt(String.valueOf(c.getUid().getUid())));
@@ -205,21 +231,14 @@ public class CommentResource {
             }
 
             jcom.put("owned", ownedComment);
-            return Response.status(Response.Status.OK)
-                    .entity(jcom.toString())
-                    .build();
-
         } catch (Exception ex) {
-
-            String err = "";
-            for (StackTraceElement e : ex.getStackTrace()) {
-                err += "\n" + e;
-            }
-            err += "\n" + ex.getCause();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"internal error occurs" + err + "\"}")
+                    .entity("{\"error\":\"internal error occurs\"}")
                     .build();
         }
+        return Response.status(Response.Status.OK)
+                .entity(jcom.toString())
+                .build();
     }
 
     @DELETE
@@ -227,66 +246,76 @@ public class CommentResource {
     public Response delete(
             @HeaderParam("auth-token") String authToken,
             @FormParam("comment_id") String authComment) {
-        
+
         if (authToken == null || authComment == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
         }
+        String originalAuth;
         try {
-            String originalAuth = SecureHelper.decrypt(authToken);
-
-            String[] authInfo = originalAuth.split("::");
-
-            long expired = Long.valueOf(authInfo[1]);
-            if (expired < System.currentTimeMillis()) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"session expired\"}")
-                        .build();
-            }
-
-            long uid = Long.valueOf(authInfo[0]);
-
-            if (!hb.isIdValid(uid)) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"message\":\"user not found\"}")
-                        .build();
-            }
-
-            long commentId = Long.valueOf(SecureHelper.decrypt(authComment));
-
-            Comment c = cb.getCommentById(commentId);
-
-            if (c == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"comment not found\"}")
-                        .build();
-            }
-
-            if (c.getUid().getUid() == uid) {
-                cb.deleteComment(c);
-            } else {
-                return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"permission denied\"}")
-                        .build();
-            }
-
-            JSONObject jcom = new JSONObject()
-                    .put("message", "success");
-            return Response.status(Response.Status.OK)
-                    .entity(jcom.toString())
-                    .build();
-
-        } catch (Exception ex) {
-
-//            String err = "";
-//            for (StackTraceElement e : ex.getStackTrace()) {
-//                err += "\n" + e;
-//            }
-//            err += "\n" + ex.getCause();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"internal error occurs\"}")
+            originalAuth = SecureHelper.decrypt(authToken);
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid token\"}")
                     .build();
         }
+
+        String[] authInfo = originalAuth.split("::");
+
+        long expired = Long.valueOf(authInfo[1]);
+        if (expired < System.currentTimeMillis()) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"session expired\"}")
+                    .build();
+        }
+
+        long uid = Long.valueOf(authInfo[0]);
+
+        if (!hb.isIdValid(uid)) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"message\":\"user not found\"}")
+                    .build();
+        }
+
+        long commentId;
+        try {
+            commentId = Long.valueOf(SecureHelper.decrypt(authComment));
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"invalid comment id\"}")
+                    .build();
+        }
+        Comment c = cb.getCommentById(commentId);
+
+        if (c == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"comment not found\"}")
+                    .build();
+        }
+
+        if (c.getUid().getUid() == uid) {
+            cb.deleteComment(c);
+        } else {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"message\":\"permission denied\"}")
+                    .build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity("{\"message\":\"success\"}")
+                .build();
+
+//        } catch (Exception ex) {
+//
+////            String err = "";
+////            for (StackTraceElement e : ex.getStackTrace()) {
+////                err += "\n" + e;
+////            }
+////            err += "\n" + ex.getCause();
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+//                    .entity("{\"error\":\"internal error occurs\"}")
+//                    .build();
+//        }
     }
 }
