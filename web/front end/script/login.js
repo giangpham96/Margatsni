@@ -15,7 +15,7 @@ function setTabHandler(tab, tabPos) {
       panels[i].className = 'hidden';
     }
     panels[tabPos].className = 'active-panel tab';
-  }
+  };
 }
 
 
@@ -26,7 +26,7 @@ fetch('https://10.114.32.118:8181/GET/api/authorized', {
                 'auth-token': getCookie('auth-token')
             }})
         .then((response) => {
-            return response.json()
+            return response.json();
         })
         .then((json) => {
             if (json.message == "authorized") {
@@ -59,7 +59,7 @@ const setupLogin = () => {
             body: `email=${emailInput.value}&password=${pwInput.value}`
         })
                 .then((response) => {
-                    return response.json()
+                    return response.json();
                 })
                 .then((json) => {
                     if (json.error) {
@@ -76,8 +76,44 @@ const setupLogin = () => {
                     console.log(err)
                 });
 
-    }
-}
+    };
+};
+
+const setupSignup = () => {
+    const loginForm = document.getElementById('signUpbtn')
+    loginForm.onclick = function(){
+        const unameInput = document.querySelector('#signUpForm > input[type="text"]');
+        const emailInput = document.querySelector('#signUpForm > input[type="email"]');
+        const pwInput = document.querySelector('#signUpForm > input[type="password"]');
+        
+        fetch('https://10.114.32.118:8181/GET/api/authorized', {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            credentials: 'include',
+            method: 'POST',
+            body: `uname=${unameInput.value}&email=${emailInput.value}&password=${pwInput.value}`
+        })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    if (json.error) {
+//                        errorMsg.innerHTML = json.error
+                        
+                    console.log(json.error)
+                        return
+                    }
+        document.cookie = "auth-token" + "=" + json['auth-token'] + ";" + "path=/";
+            
+//                    window.location.href = "https://10.114.32.118:8181/GET/feed.html"
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
+
+    };
+};
 
 
 function getCookie(cname) {
@@ -89,7 +125,7 @@ function getCookie(cname) {
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
