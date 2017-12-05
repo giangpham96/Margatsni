@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>Login page</title>
         <link rel="stylesheet" href="../css/login.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <div class="container">
@@ -15,25 +16,20 @@
                     <li><a href="#" class="inactive" id="signuptab">Sign up</a></li>
                 </ul>
             </nav>
-            <div class="login-tab tab">
-                <form method="post">
-                    <label for="mail">E-mail:</label>
+            <div class="tab">
+                <form method="post" id="logInForm">
                     <input placeholder="e-mail" type="email">
-                    <label for="password">Password:</label>
                     <input placeholder="password" type=password>
-                    <button>Log in</button>
                 </form>
+                <button id="logInbtn">Log in</button>
             </div>
-            <div class="singup-tab tab hidden">
-                <form>
-                    <label>Username:</label>
-                    <input placeholder="username">
-                    <label for="mail">E-mail:</label>
+            <div class="tab hidden">
+                <form id="signUpForm">
+                    <input placeholder="username" type="text">
                     <input placeholder="e-mail" type="email">
-                    <label for="password">Password:</label>
                     <input placeholder="password" type=password>
-                    <button>Sign up</button>
                 </form>
+                <button id="signUpbtn">Sign up</button>
             </div>
             <button>Continue without an account</button>
         </div>

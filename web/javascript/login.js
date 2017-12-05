@@ -1,3 +1,4 @@
+'use strict';
 fetch('api/authorized', {
     credentials: 'include', 
     headers: {

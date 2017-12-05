@@ -8,7 +8,9 @@
 }
 
 body,html{
-    height: 98%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body{
@@ -25,7 +27,6 @@ body{
 }
 
 .login-box{
-    float:right;
     background: #fff;
     box-shadow: 3px 3px 3px;
     display: flex;
@@ -40,13 +41,8 @@ h1{
     margin: 1rem;
 }
 
-.tab-selector{
-
-}
-
 ul{
     display: flex;
-    justify-content: space-around;
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -62,54 +58,68 @@ a{
     display: inline-block;
     width: 100%;
     text-decoration: none;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 1rem;
+    font-family: sans-serif;
 }
 
 .tab{
-    height:14rem;
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
 }
 
 form{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    height: 11rem;
 }
 
 input{
-    margin: 0.3rem;
+    display: block;
+    margin: 1rem 0;
     height: 1.8rem;
     width: 15rem;
     padding-left: 0.3rem;
+}
+
+p{
+    font-size: 0.7rem;
+    color: red;
+    margin: 0;
 }
 
 button{
     width: 80%;
     height: 1.8rem;
     margin: 0.3rem auto;
-    background: linear-gradient(to bottom, #a90329 0%,#8f0222 44%,#6d0019 100%);
+    background: #9d1a1f;
     color: white;
     border:0;
 }
 
 button:hover{
     box-shadow: 0px 0px 10px 1px black;
-}
-
-.active{
-    color:red;
+    background-color: #ca2026;
 }
 
 .inactive{
-    color: white;
-    background: red;
+    color: #711417;
     text-decoration: underline;
 }
 
-.inactive:hover{
-    color:black;
+.active{
+    color: white;
+    background-color: #9d1a1f;
+    
 }
 
 .hidden{
     display: none;
 }
 
+@media only screen and (max-width: 768px){
+    .container{
+        padding:0;
+        justify-content: center;
+    }
+}
+
+//colors 450c0e 711417 9d1a1f ca2026
