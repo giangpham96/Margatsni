@@ -45,7 +45,7 @@ public class LikeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response post(@FormParam("post") String authPost,
             @HeaderParam("auth-token") String authToken) {
-        if (authPost == null || authToken == null) {
+        if (authPost == null || authToken == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();

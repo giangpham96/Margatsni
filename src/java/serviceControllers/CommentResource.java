@@ -49,7 +49,7 @@ public class CommentResource {
             @HeaderParam("auth-token") String authToken,
             @FormParam("post") String authPost,
             @FormParam("content") String content) {
-        if (authToken == null || authPost == null || content == null) {
+        if (authToken == null || authPost == null || content == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
@@ -152,7 +152,7 @@ public class CommentResource {
             @FormParam("comment_id") String authComment,
             @FormParam("content") String content) {
 
-        if (authToken == null || authComment == null || content == null) {
+        if (authToken == null || authComment == null || content == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
@@ -247,7 +247,7 @@ public class CommentResource {
             @HeaderParam("auth-token") String authToken,
             @FormParam("comment_id") String authComment) {
 
-        if (authToken == null || authComment == null) {
+        if (authToken == null || authComment == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();

@@ -39,7 +39,7 @@ public class ProfilePic extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
 
-            if (authToken == null) {
+            if (authToken == null || authToken.equals("")) {
                 response.setStatus(400);
                 out.println("{\"message\":\"bad request\"}");
                 return;

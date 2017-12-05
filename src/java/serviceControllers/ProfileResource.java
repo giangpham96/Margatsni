@@ -203,7 +203,7 @@ public class ProfileResource {
     public Response getMe(@HeaderParam("auth-token") String authToken,
             @QueryParam("page") int page) {
 
-        if (authToken == null) {
+        if (authToken == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();

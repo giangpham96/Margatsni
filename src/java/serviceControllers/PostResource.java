@@ -42,7 +42,7 @@ public class PostResource {
             @FormParam("caption") String caption,
             @HeaderParam("auth-token") String authToken) {
 
-        if (authPost == null || caption == null || authToken == null) {
+        if (authPost == null || caption == null || authToken == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
@@ -171,7 +171,7 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@FormParam("post") String authPost,
             @HeaderParam("auth-token") String authToken) {
-        if (authPost == null || authToken == null) {
+        if (authPost == null || authToken == null || authToken.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
