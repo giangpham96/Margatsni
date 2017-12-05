@@ -19,7 +19,7 @@ function setTabHandler(tab, tabPos) {
 }
 
 
-fetch('api/authorized', {
+fetch('https://10.114.32.118:8181/GET/api/authorized', {
     credentials: 'include', 
     headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,18 +39,18 @@ fetch('api/authorized', {
             console.log(err)
         });
 
-initViews = () => {
+const initViews = () => {
     setupLogin()
     setupSignup()
 }
 
-setupLogin = () => {
-    const loginForm = document.getElementById('#logInbtn')
+const setupLogin = () => {
+    const loginForm = document.getElementById('logInbtn')
     loginForm.onclick = function(){
         const emailInput = document.querySelector('#logInForm > input[type="email"]');
-        const pwInput = document.querySelector('#logInFrom > input[type="password"]');
+        const pwInput = document.querySelector('#logInForm > input[type="password"]');
         
-        fetch('api/authorized', {
+        fetch('https://10.114.32.118:8181/GET/api/authorized', {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
