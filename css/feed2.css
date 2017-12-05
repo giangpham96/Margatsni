@@ -1,0 +1,36 @@
+body{
+  background: #eee;
+}
+.wrapper{
+  width: 650px;
+}
+.shadow{
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
+}
+.form textarea {
+  border: none;
+  height: 40px;
+  min-height: 40px;
+  resize: none;
+  line-height: 28px;
+  transition: height 0.3s ease-in-out;
+}
+.form textarea:hover{
+  box-shadow: none;
+}
+.form textarea:focus{
+  border: 1px solid #ddd;
+  height: 150px;
+  line-height: 21px;
+}
+.form .btn{
+  margin-top: 2px;
+}
+.item{
+  float: left;
+  width: 100%;
+  margin: 15px 0;
+}
+.item .label{
+  margin-top: -1px;
+}
