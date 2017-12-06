@@ -62,10 +62,10 @@ const setupLogin = () => {
                     return response.json();
                 })
                 .then((json) => {
-                    if (json.error) {
+                    if (json.message) {
 //                        errorMsg.innerHTML = json.error
                         
-                    console.log(json.error)
+                    console.log(json.message)
                         return
                     }
         document.cookie = "auth-token" + "=" + json['auth-token'] + ";" + "path=/";
@@ -86,7 +86,7 @@ const setupSignup = () => {
         const emailInput = document.querySelector('#signUpForm > input[type="email"]');
         const pwInput = document.querySelector('#signUpForm > input[type="password"]');
         
-        fetch('https://10.114.32.118:8181/GET/api/authorized', {
+        fetch('https://10.114.32.118:8181/GET/api/signup', {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -98,10 +98,10 @@ const setupSignup = () => {
                     return response.json();
                 })
                 .then((json) => {
-                    if (json.error) {
+                    if (json.message) {
 //                        errorMsg.innerHTML = json.error
                         
-                    console.log(json.error)
+                    console.log(json.message)
                         return
                     }
         document.cookie = "auth-token" + "=" + json['auth-token'] + ";" + "path=/";
