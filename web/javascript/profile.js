@@ -92,9 +92,10 @@ const loadPage = () => {
 
                 const like_icon = (p.liked)
                         ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
-                        : 'https://image.flaticon.com/icons/png/128/126/126471.png'
+                        : 'https://image.flaticon.com/icons/png/128/126/126471.png';
                 alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
-
+                
+                
                 divLikeChild.appendChild(alikebutton);
 
                 const alikeno = document.createElement('a');
@@ -102,6 +103,10 @@ const loadPage = () => {
 
                 alikeno.innerHTML = p.likes;
 
+                alikebutton.addEventListener('click', () => {
+                    like(alikebutton, alikeno, p.postId);
+                });
+                
                 divLikeChild.appendChild(alikeno);
 
                 divLike.appendChild(divLikeChild);
@@ -145,7 +150,7 @@ const loadPage = () => {
                             </a>`;
 
                 divCommentButton.addEventListener('click', () => {
-                    createComment(ulComment, textArea, p.postId)
+                    createComment(ulComment, textArea, p.postId);
                 });
                 commentForm.appendChild(divCommentButton);
                 divComment.appendChild(commentForm);
@@ -223,5 +228,33 @@ const renderComment = (c) => {
     li.innerHTML += c.content;
     
     return li;
+}
+
+const like = (alikebutton, alikeno, post_id) => {
+    fetch('https://10.114.32.118:8181/GET/api/like', {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'auth-token': getCookie('auth-token')
+        },
+        credentials: 'include',
+        method: 'POST',
+        body: `post=${post_id}`
+    })
+            .then((response) => {
+                return response.json();
+            })
+            .then((json) => {
+                if (!json.message) {
+                    const like_icon = (json.liked)
+                        ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
+                        : 'https://image.flaticon.com/icons/png/128/126/126471.png';
+                    alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
+                    alikeno.innerHTML = json.likes;
+                    return;
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
 }
 loadPage();
