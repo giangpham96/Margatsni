@@ -234,6 +234,12 @@ input,select,textarea{
 .hover-text-red:hover i:before,.text-red,.text-red i:before{
     color:#F44336!important
 }
+
+.avatar {
+    object-fit: cover;
+    height: 45px;
+    width: 45px;
+}
 .hover-text-red:hover{
     color:#E91E63!important
 }
