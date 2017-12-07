@@ -12,8 +12,8 @@ body{
   height: 40px;
   min-height: 40px;
   resize: none;
-  line-height: 28px;
-  transition: height 0.3s ease-in-out;
+  line-height: 28px !important;
+  transition: height 0.3s ease-in-out !important;
 }
 .form textarea:hover{
   box-shadow: none;
