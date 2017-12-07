@@ -69,7 +69,7 @@ a{
 }
 
 form{
-    height: 11rem;
+    height: 10rem;
 }
 
 input{
@@ -111,6 +111,12 @@ button:hover{
     
 }
 
+#errorsu, #errorli{
+    font-size: 1rem;
+    text-align: center;
+    
+}
+
 .hidden{
     display: none;
 }
@@ -120,4 +126,12 @@ button:hover{
         padding:0;
         justify-content: center;
     }
+}
+
+.visible{
+    visibility: visible;
+}
+
+.invisible{
+    visibility: hidden;
 }
