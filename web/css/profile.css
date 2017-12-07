@@ -283,3 +283,9 @@ input,select,textarea{
     width: 100%;
   }
 }
+.no padding{
+    padding: 0;
+}
+.width-70{
+    width: 70%;
+}

@@ -18,7 +18,6 @@ fetch('api/v1/authorized', {credentials: 'include'})
         .catch((err) => {
             console.log(err)
         });
-
 initViews = () => {
     setupLogin()
 //    setupSignup()
