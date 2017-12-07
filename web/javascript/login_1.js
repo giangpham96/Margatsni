@@ -50,7 +50,7 @@ const setupLogin = () => {
     loginForm.onclick = function(){
         const emailInput = document.querySelector('#logInForm > input[type="email"]');
         const pwInput = document.querySelector('#logInForm > input[type="password"]');
-        const errorp =  document.getElementById(errorli);
+        const errorp =  document.getElementById('errorli');
         
         fetch('https://10.114.32.118:8181/GET/api/authorized', {
             headers: {
@@ -65,7 +65,7 @@ const setupLogin = () => {
                 })
                 .then((json) => {
                     if (json.message) {
-                        errorp = json.message;
+                        errorp.innerHTML = json.message;
                         errorp.className = "visible";
                         
                     console.log(json.message)
@@ -88,7 +88,7 @@ const setupSignup = () => {
         const unameInput = document.querySelector('#signUpForm > input[type="text"]');
         const emailInput = document.querySelector('#signUpForm > input[type="email"]');
         const pwInput = document.querySelector('#signUpForm > input[type="password"]');
-        const errorp =  document.getElementById(errorsu);
+        const errorp =  document.getElementById('errorsu');
         
         fetch('https://10.114.32.118:8181/GET/api/signup', {
             headers: {
@@ -103,7 +103,7 @@ const setupSignup = () => {
                 })
                 .then((json) => {
                     if (json.message) {
-                       errorp = json.message;
+                       errorp.innerHTML = json.message;
                         errorp.className = "visible";
                         
                     console.log(json.message)

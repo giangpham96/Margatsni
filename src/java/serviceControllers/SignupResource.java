@@ -35,7 +35,8 @@ public class SignupResource {
             @FormParam("email") String email,
             @FormParam("password") String password) {
 
-        if (uname == null || email == null || password == null) {
+        if (uname == null || email == null || password == null 
+                ||uname.isEmpty()||email.isEmpty() || password.isEmpty() ) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"bad request\"}")
                     .build();
