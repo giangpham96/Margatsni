@@ -319,6 +319,9 @@ input,select,textarea{
     overflow-x: hidden;
     overflow-y: scroll;
 }
+.red-text {
+    color: #87171b;
+}
 ::-webkit-scrollbar {
     width:9px;
 }

@@ -38,8 +38,8 @@ const loadPage = () => {
             const imgavatar = document.createElement('img');
             imgavatar.className = 'pull-left width-100 round avatar';
 
-            if (p.profile_pic) {
-                imgavatar.setAttribute('src', p.profile_pic);
+            if (json.profile_pic) {
+                imgavatar.setAttribute('src', json.profile_pic);
             } else {
                 imgavatar.setAttribute('src', './image/avatar.png');
             }
@@ -51,7 +51,7 @@ const loadPage = () => {
             divusername.className = "col-11 col-persist gutter-h-10 padding-top-15";
 
             const h5username = document.createElement('h5');
-            h5username.className = "text-15 text700 pull-left";
+            h5username.className = "text-15 text700 pull-left red-text";
             h5username.innerHTML = json.uname;
 
             const ats = document.createElement('a');
@@ -146,7 +146,7 @@ const loadPage = () => {
                 const divCommentButton = document.createElement('div');
                 divCommentButton.className = 'col-2 col-persist';
                 divCommentButton.innerHTML = `<a class="btn l icon round text-gray hover-text-red">
-                                <i class="fa fa-video-camera"></i>
+                                <img style="height: 1.5em; width:1.5em; padding: 5px;" src="./image/ic_send.png"/>
                             </a>`;
 
                 divCommentButton.addEventListener('click', () => {
@@ -180,6 +180,8 @@ const getCookie = (cname) => {
 };
 
 const createComment = (ulComment, textArea, post_id) => {
+    if (textArea.value.trim()==='')
+        return;
     fetch('https://10.114.32.118:8181/GET/api/comment', {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -221,7 +223,7 @@ const renderComment = (c) => {
 
     divInfo.innerHTML += `<div class="col-11 col-persist gutter-h-10 padding-top-15">
                                     
-                                    <h5 class="text-15 text700 pull-left">${c.uname}</h5>
+                                    <h5 class="text-15 text700 pull-left red-text">${c.uname}</h5>
                                     <a class="pull-right label fill-white text-gray">12h ago</a>
                                 </div>`;
     li.appendChild(divInfo);
