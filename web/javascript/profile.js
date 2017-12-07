@@ -24,7 +24,7 @@ const loadPage = () => {
         
         
         const posts = json.post.posts;
-        console.log(posts)
+        
         posts.forEach((p) => {
             const article = document.createElement('article');
             article.className = 'item white shadow cf';
@@ -76,7 +76,7 @@ const loadPage = () => {
             const img = document.createElement('img');
             img.className = 'pull-left width-100';
             img.setAttribute('src', p.src);
-            console.log(p)
+            
             divcontent.appendChild(img);
             article.appendChild(divcontent);
 
@@ -89,9 +89,9 @@ const loadPage = () => {
             const alikebutton = document.createElement('a');
             alikebutton.className = "btn icon round text-red fill-silver";
             
-            alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src="https://cdn.pixabay.com/photo/2013/07/12/14/15/like-148087_960_720.png">`
+            alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src="https://cdn.pixabay.com/photo/2013/07/12/14/15/like-148087_960_720.png">`;
             
-            divLikeChild.appendChild(alikebutton)
+            divLikeChild.appendChild(alikebutton);
             
             const alikeno = document.createElement('a');
             alikeno.className = "btn white hover-disable text-red text600";
@@ -127,27 +127,43 @@ const loadPage = () => {
                                     
                                     <h5 class="text-15 text700 pull-left">${c.uname}</h5>
                                     <a class="pull-right label fill-white text-gray">12h ago</a>
-                                </div>`
+                                </div>`;
                 li.appendChild(divInfo);
                 li.innerHTML += c.content;
                 ulComment.appendChild(li);
             });
             
             divComment.appendChild(ulComment);
-            divComment.innerHTML += `
-                    <form class="form relative padding">
-                        <div class="col-1 col-persist  ">
-                            <img class="pull-left width-100 round" src="./image/avatar.png" />
-                        </div>
-                        <div class="col-9 col-persist gutter-h-10 padding-top-5  ">
-                            <textarea  placeholder="Write a comment?"></textarea>
-                        </div>
-                        <div class="col-2 col-persist  ">
-                            <a class="btn l icon round text-gray hover-text-red">
+            
+            const commentForm = document.createElement('form');
+            commentForm.className = 'form relative padding';
+            const divAvaComment = document.createElement('div');
+            divAvaComment.className = 'col-1 col-persist';
+            const imgAvaComment = document.createElement('img');
+            imgAvaComment.className = 'pull-left width-100 round avatar';
+            imgAvaComment.setAttribute('src', (json.profile_pic) ? json.profile_pic : "./image/avatar.png");
+            divAvaComment.appendChild(imgAvaComment);
+            commentForm.appendChild(divAvaComment);
+            
+            const divCommentText = document.createElement('div');
+            divCommentText.className = 'col-9 col-persist gutter-h-10 padding-top-5';
+            const textArea = document.createElement('textarea');
+            textArea.setAttribute('placeholder', "Write a comment...");
+            divCommentText.appendChild(textArea);
+            commentForm.appendChild(divCommentText);
+           
+            const divCommentButton = document.createElement('div');
+            divCommentButton.className = 'col-2 col-persist';
+            divCommentButton.innerHTML = `<a class="btn l icon round text-gray hover-text-red">
                                 <i class="fa fa-video-camera"></i>
-                            </a>
-                        </div>
-                    </form>`
+                            </a>`;
+            
+            divCommentButton.addEventListener('click', () => {
+                console.log(textArea.value);
+            });
+            commentForm.appendChild(divCommentButton);
+            divComment.appendChild(commentForm);
+            
             article.appendChild(divComment);
             root.appendChild(article);
         });
