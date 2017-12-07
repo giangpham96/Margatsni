@@ -123,10 +123,29 @@ input,select,textarea{
     -moz-border-radius:2px;
     -webkit-border-radius:2px
 }
-.addon-append .append.fa-angle-down,.addon-prepend .prepend .fa-angle-down{top:0}
-.addon-append .append button,.addon-prepend .prepend button{height:auto!important;line-height:1.1!important;border:none;background:0 0;padding:0;margin:0;color:inherit;font-size:inherit}
-.addon,.btn,.btn-addon,.button-group,.buttons,.label{display:inline-block}
-.addon,.btn{padding:5px 10px;line-height:1.42857143;vertical-align:middle;border:1px solid transparent;transition:background ease-in-out .1s}
+.addon-append .append.fa-angle-down,.addon-prepend .prepend .fa-angle-down{
+    top:0
+}
+.addon-append .append button,.addon-prepend .prepend button{
+    height:auto!important;
+    line-height:1.1!important;
+    border:none;
+    background:0 0;
+    padding:0;
+    margin:0;
+    color:inherit;
+    font-size:inherit
+}
+.addon,.btn,.btn-addon,.button-group,.buttons,.label{
+    display:inline-block
+}
+.addon,.btn{
+    padding:5px 10px;
+    line-height:1.42857143;
+    vertical-align:middle;
+    border:1px solid transparent;
+    transition:background ease-in-out .1s
+}
 .btn,button{
     background:#eee
 }
@@ -288,4 +307,32 @@ input,select,textarea{
 }
 .width-70{
     width: 70%;
+}
+.overflow {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+::-webkit-scrollbar {
+    width:9px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    background:rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    background:rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background:rgba(0,0,0,0.4);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background:rgba(0,0,0,0.05);
 }
