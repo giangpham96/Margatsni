@@ -5,6 +5,16 @@
  */
 'use strict'
 let page = 0;
+
+const setupNavbar = () => {
+    const home = document.getElementsByClassName('slogan')[0];
+    home.addEventListener('click', () => {
+        window.location.href = 'https://10.114.32.118:8181/GET/feed.html'
+    });
+}
+
+setupNavbar();
+
 const loadPage = () => {
     fetch(`https://10.114.32.118:8181/GET/api/profile/me?page=${page}`, {
         credentials: 'include',
@@ -14,11 +24,15 @@ const loadPage = () => {
         }
     }).then((response) => {
         return response.json();
+        
     }).then((json) => {
         const avatar = document.getElementsByClassName('avatar')[0];
+        const userIcon = document.getElementsByClassName('profile')[1];
         //set avatar picture of profile page
-        if (json.profile_pic)
+        if (json.profile_pic) {
             avatar.setAttribute('src', json.profile_pic);
+            userIcon.setAttribute('src', json.profile_pic);
+        }
 
         const root = document.getElementsByClassName('wrapper center padding-40')[0];
 
@@ -56,7 +70,7 @@ const loadPage = () => {
 
             const ats = document.createElement('a');
             ats.className = 'pull-right label fill-white text-gray';
-            ats.innerHTML = '12h ago';
+            ats.innerHTML = timeSince(p.timestamp);
 
             divusername.appendChild(h5username);
             divusername.appendChild(ats);
@@ -217,14 +231,14 @@ const renderComment = (c) => {
     const divImg = document.createElement('div');
     divImg.className = "col-1 col-persist";
     const ava = (c.profile_pic) ? c.profile_pic : './image/avatar.png';
-    divImg.innerHTML = `<img class="pull-left width-100 round" src=${ava} />`;
+    divImg.innerHTML = `<img class="pull-left width-100 round avatar" src=${ava} />`;
 
     divInfo.appendChild(divImg);
 
     divInfo.innerHTML += `<div class="col-11 col-persist gutter-h-10 padding-top-15">
                                     
                                     <h5 class="text-15 text700 pull-left red-text">${c.uname}</h5>
-                                    <a class="pull-right label fill-white text-gray">12h ago</a>
+                                    <a class="pull-right label fill-white text-gray">${timeSince(c.timestamp)}</a>
                                 </div>`;
     li.appendChild(divInfo);
     li.innerHTML += c.content;
@@ -259,4 +273,33 @@ const like = (alikebutton, alikeno, post_id) => {
                 console.log(err);
             });
 }
+
+const timeSince = (date) => {
+
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = Math.floor(seconds / 31536000);
+
+  if (interval > 1) {
+    return interval + " years ago";
+  }
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) {
+    return interval + " months ago";
+  }
+  interval = Math.floor(seconds / 86400);
+  if (interval > 1) {
+    return interval + " days ago";
+  }
+  interval = Math.floor(seconds / 3600);
+  if (interval > 1) {
+    return interval + " hours ago";
+  }
+  interval = Math.floor(seconds / 60);
+  if (interval > 1) {
+    return interval + " minutes ago";
+  }
+  return Math.floor(seconds) + " seconds";
+}
+
 loadPage();

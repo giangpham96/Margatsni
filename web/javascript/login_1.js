@@ -16,7 +16,7 @@ const setTabHandler = (tab, tabPos) => {
         }
         panels[tabPos].className = 'active-panel tab';
     });
-}
+};
 
 for (let i = 0; i < tabs.length; i++) {
     let tab = tabs[i];
@@ -25,7 +25,7 @@ for (let i = 0; i < tabs.length; i++) {
 
 //Log in form set up
 const setupLogin = () => {
-    const loginForm = document.querySelector('#logInbtn')
+    const loginForm = document.querySelector('#logInbtn');
     loginForm.addEventListener('click', (evt) => {
         const emailInput = document.querySelector('#logInForm > input[type="email"]');
         const pwInput = document.querySelector('#logInForm > input[type="password"]');
@@ -60,8 +60,8 @@ const setupLogin = () => {
                         return;
                     }
                     document.cookie = "auth-token" + "=" + json['auth-token'] + ";" + "path=/";
-
-                    //                    window.location.href = "https://10.114.32.118:8181/GET/feed.html"
+                    errorp.className = "invisible";
+                    window.location.href = "https://10.114.32.118:8181/GET/feed.html"
                 })
                 .catch((err) => {
                     console.log(err);
@@ -75,7 +75,7 @@ const setupLogin = () => {
 
 //Sign up form set up
 const setupSignup = () => {
-    const loginForm = document.querySelector('#signUpbtn')
+    const loginForm = document.querySelector('#signUpbtn');
     loginForm.addEventListener('click', (evt) => {
         const unameInput = document.querySelector('#signUpForm > input[type="text"]');
         const emailInput = document.querySelector('#signUpForm > input[type="email"]');
@@ -146,9 +146,8 @@ const setupSignup = () => {
 const initViews = () => {
     setupLogin();
     setupSignup();
+    document.body.className = "visible"
 }
-
-initViews();
 
 //Checks cookie
 const getCookie = (cname) => {
@@ -166,7 +165,7 @@ const getCookie = (cname) => {
     }
     return "";
 };
-
+document.body.className = "invisible";
 //Attempt to check if logged in
 fetch('https://10.114.32.118:8181/GET/api/authorized', {
         credentials: 'include',
@@ -179,8 +178,8 @@ fetch('https://10.114.32.118:8181/GET/api/authorized', {
         return response.json();
     })
     .then((json) => {
-        if (json.message == "authorized") {
-            //                window.location.href = "https://10.114.32.118:8181/GET/feed.html"
+        if (json['auth-token']) {
+            window.location.href = "https://10.114.32.118:8181/GET/feed.html";
             return;
         }
         initViews();
