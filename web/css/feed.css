@@ -16,6 +16,16 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
+#content{
+    margin-top: 100px;
+    position: relative;
+}
+
+#nav{
+    border:2px solid black;
+}
+
 body {
 	line-height: 1;
 }
