@@ -1,10 +1,10 @@
-html, body, div, span, img, 
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+@font-face {
+font-family: 'Billabong';
+font-style: normal;
+font-weight: normal;
+src: local('Billabong'), url('Billabong.woff') format('woff');
+}
+html, body, img {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -12,8 +12,7 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
+header, nav, section {
 	display: block;
 }
 
@@ -77,4 +76,49 @@ body {
 	padding: 20px;
 	width: 300px;
 	border: 1px solid #ddd;
+}
+ul {
+  padding: 0;
+  list-style: none;
+    width: 100%;
+}
+.margastni {
+  display: flex;
+}
+.margastni__search {
+  margin-left: auto;
+  margin-right: auto;  
+    padding-left: 0;
+}
+.margastni {
+  height: 46px;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(238,238,238 ,1);
+  color: rgba(117,117,117 ,1);
+  box-shadow: 5px 10px 20px -20px rgba(85,172,238 ,1);
+}
+.margastni li {
+  cursor: pointer;
+}
+.margastni li:hover{
+  color: rgba(85,172,238 ,1);
+}
+input[type=text] {
+    width: 130px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;  
+}
+input[type=text]:focus {
+    width: 100%;
+}
+.slogan {
+    font-family: 'Billabong';
+    font-size: 3em;
+    padding-left: 1em;
+}
+.profile {
+    height: 35px; 
+    width: 35px;
+    border-radius: 100%;
 }
