@@ -1,6 +1,9 @@
 'use strict';
 const tabs = document.querySelectorAll('a');
 const panels = document.querySelectorAll('.tab');
+let validsu = false;
+let validli = false;
+
 for(var i = 0; i < tabs.length; i++) {
   var tab = tabs[i];
   setTabHandler(tab, i);
@@ -45,7 +48,7 @@ const initViews = () => {
     setupSignup()
 }
 
-const setupLogin = () => {
+const setupLogin = function () {
     const loginForm = document.getElementById('logInbtn')
     loginForm.onclick = function(){
         const emailInput = document.querySelector('#logInForm > input[type="email"]');
@@ -82,7 +85,7 @@ const setupLogin = () => {
     };
 };
 
-const setupSignup = () => {
+const setupSignup = function () {
     const loginForm = document.getElementById('signUpbtn')
     loginForm.onclick = function(){
         const unameInput = document.querySelector('#signUpForm > input[type="text"]');

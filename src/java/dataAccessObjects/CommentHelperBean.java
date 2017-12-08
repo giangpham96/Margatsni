@@ -27,6 +27,8 @@ public class CommentHelperBean {
 
     public Comment addComment(long uid, long postId, String content) {
         try {
+            
+            em.getEntityManagerFactory().getCache().evictAll();
             User user = (User) em.createNamedQuery("User.findByUid")
                     .setParameter("uid", uid)
                     .getSingleResult();
@@ -50,13 +52,15 @@ public class CommentHelperBean {
     }
 
     public Comment updateComment(Comment c) {
+        em.getEntityManagerFactory().getCache().evictAll();
         em.merge(c);
         return c;
     }
 
     public Comment getCommentById(long id) {
         try {
-            return (Comment) em.createNamedQuery("Comment.findByCommentId")
+        em.getEntityManagerFactory().getCache().evictAll();
+        return (Comment) em.createNamedQuery("Comment.findByCommentId")
                     .setParameter("commentId", id)
                     .getSingleResult();
         } catch (Exception ex) {
@@ -66,7 +70,7 @@ public class CommentHelperBean {
     }
 
     public void deleteComment(Comment c) {
-        
+        em.getEntityManagerFactory().getCache().evictAll();
         em.remove(em.merge(c));
     }
 }

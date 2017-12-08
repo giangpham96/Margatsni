@@ -29,6 +29,7 @@ public class UserHelperBean {
 
     public boolean isEmailUsed(String email) {
         try {
+            em.getEntityManagerFactory().getCache().evictAll();
             User user = (User) em.createNamedQuery("User.findByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
@@ -40,6 +41,8 @@ public class UserHelperBean {
 
     public boolean isUsernameUsed(String username) {
         try {
+            
+            em.getEntityManagerFactory().getCache().evictAll();
             User user = (User) em.createNamedQuery("User.findByUname")
                     .setParameter("uname", username)
                     .getSingleResult();
@@ -51,6 +54,8 @@ public class UserHelperBean {
 
     public boolean isIdValid(long uid) {
         try {
+            
+            em.getEntityManagerFactory().getCache().evictAll();
             User user = (User) em.createNamedQuery("User.findByUid")
                     .setParameter("uid", uid)
                     .getSingleResult();
@@ -62,6 +67,8 @@ public class UserHelperBean {
 
     public User addUser(String uname, String email, String password) {
         try {
+            
+            em.getEntityManagerFactory().getCache().evictAll();
             User user = new User();
             user.setUname(uname);
             user.setEmail(email);
@@ -77,6 +84,7 @@ public class UserHelperBean {
 
     public User getUser(String email, String password) {
         try {
+            em.getEntityManagerFactory().getCache().evictAll();
             return (User) em.createNamedQuery("User.authorized")
                     .setParameter("email", email)
                     .setParameter("password", SecureHelper.encrypt(password))
@@ -88,6 +96,7 @@ public class UserHelperBean {
     
     public User getUserById(long uid) {
         try {
+            em.getEntityManagerFactory().getCache().evictAll();
             return (User) em.createNamedQuery("User.findByUid")
                     .setParameter("uid", uid)
                     .getSingleResult();
@@ -97,7 +106,7 @@ public class UserHelperBean {
     }
 
     public Post like(User user, Post post) {
-        
+        em.getEntityManagerFactory().getCache().evictAll();
         if (user.getPostCollection().contains(post)) {
             user.getPostCollection().remove(post);
             post.getUserCollection().remove(user);
@@ -111,11 +120,13 @@ public class UserHelperBean {
     }
 
     public User update(User user) {
+        em.getEntityManagerFactory().getCache().evictAll();
         User u = em.merge(user);
         return u;
     }
     
     public List<User> searchUser (String search) {
+        em.getEntityManagerFactory().getCache().evictAll();
         return (List<User>)em.createNativeQuery("SELECT * FROM m_user WHERE m_user.uname LIKE \""+search+"%\"",
                 User.class)         
                 .getResultList();

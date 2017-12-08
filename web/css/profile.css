@@ -12,8 +12,8 @@ body{
   height: 40px;
   min-height: 40px;
   resize: none;
-  line-height: 28px;
-  transition: height 0.3s ease-in-out;
+  line-height: 28px !important;
+  transition: height 0.3s ease-in-out !important;
 }
 .form textarea:hover{
   box-shadow: none;
@@ -234,6 +234,12 @@ input,select,textarea{
 .hover-text-red:hover i:before,.text-red,.text-red i:before{
     color:#F44336!important
 }
+
+.avatar {
+    object-fit: cover;
+    height: 45px;
+    width: 45px;
+}
 .hover-text-red:hover{
     color:#E91E63!important
 }
@@ -312,6 +318,9 @@ input,select,textarea{
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+.red-text {
+    color: #87171b;
 }
 ::-webkit-scrollbar {
     width:9px;

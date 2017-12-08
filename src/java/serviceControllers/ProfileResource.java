@@ -167,7 +167,7 @@ public class ProfileResource {
                     liked = true;
                 }
 
-                json.put("liked", liked);
+                jpost.put("liked", liked);
                 boolean canLike = true, canComment = true;
 
                 if (uid == -1) {
@@ -297,7 +297,7 @@ public class ProfileResource {
                     liked = true;
                 }
 
-                json.put("liked", liked);
+                jpost.put("liked", liked);
                 boolean canLike = true, canComment = true;
 
                 if (uid == -1) {

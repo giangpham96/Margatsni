@@ -26,6 +26,8 @@ public class PostHelperBean {
     public Post addPost(long uid, String src, String caption,
             short permission, boolean isSharedPost, long sharedPostId) {
         try {
+
+            em.getEntityManagerFactory().getCache().evictAll();
             Post post = new Post();
 
             User user = (User) em.createNamedQuery("User.findByUid")
@@ -53,6 +55,7 @@ public class PostHelperBean {
     }
 
     public List<Post> getPostsInPage(int page) {
+        em.getEntityManagerFactory().getCache().evictAll();
         return em.createNamedQuery("Post.findAll")
                 .setFirstResult(page * 24)
                 .setMaxResults(24)
@@ -60,12 +63,16 @@ public class PostHelperBean {
     }
 
     public List<Post> getTopPostsInPage(int page) {
-        return (List<Post>)em.createNativeQuery("select m_post.post_id, m_post.timestamp, m_post.src, m_post.caption, m_post.uid, COUNT(m_like.post_id) as likes FROM m_post left JOIN m_like ON m_post.post_id = m_like.post_id GROUP BY m_post.post_id ORDER BY likes DESC LIMIT 24 OFFSET "+page * 24,
-                Post.class)         
+
+        em.getEntityManagerFactory().getCache().evictAll();
+        return (List<Post>) em.createNativeQuery("select m_post.post_id, m_post.timestamp, m_post.src, m_post.caption, m_post.uid, COUNT(m_like.post_id) as likes FROM m_post left JOIN m_like ON m_post.post_id = m_like.post_id GROUP BY m_post.post_id ORDER BY likes DESC LIMIT 24 OFFSET " + page * 24,
+                Post.class)
                 .getResultList();
     }
-    
+
     public List<Post> getPostsByUidInPage(long uid, int page) {
+
+        em.getEntityManagerFactory().getCache().evictAll();
         User user = (User) em.createNamedQuery("User.findByUid")
                 .setParameter("uid", uid)
                 .getSingleResult();
@@ -78,6 +85,7 @@ public class PostHelperBean {
 
     public Post getPostById(long postId) {
         try {
+            em.getEntityManagerFactory().getCache().evictAll();
             return (Post) em.createNamedQuery("Post.findByPostId")
                     .setParameter("postId", postId)
                     .getSingleResult();
@@ -87,11 +95,15 @@ public class PostHelperBean {
     }
 
     public Post update(Post p) {
+
+        em.getEntityManagerFactory().getCache().evictAll();
         em.merge(p);
         return p;
     }
 
     public void delete(Post post) {
+
+        em.getEntityManagerFactory().getCache().evictAll();
         Post p = em.merge(post);
         em.remove(p);
         for (User user : p.getUserCollection()) {

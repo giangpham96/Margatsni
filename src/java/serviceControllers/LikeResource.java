@@ -100,32 +100,37 @@ public class LikeResource {
         JSONObject json = new JSONObject();
 
         try {
-            json.put("src", post.getSrc());
-            json.put("postId", SecureHelper
-                    .encrypt(String.valueOf(post.getPostId())));
-            json.put("timestamp", post.getTimestamp());
-            json.put("caption", post.getCaption());
+//            json.put("src", post.getSrc());
+//            json.put("postId", SecureHelper
+//                    .encrypt(String.valueOf(post.getPostId())));
+//            json.put("timestamp", post.getTimestamp());
+//            json.put("caption", post.getCaption());
 
-            Collection<Comment> comments = post.getCommentCollection();
+//            Collection<Comment> comments = post.getCommentCollection();
 
-            JSONArray jcomments = new JSONArray();
-            for (Comment c : comments) {
-                JSONObject jcom = new JSONObject();
-                jcom.put("uid",
-                        SecureHelper
-                                .encrypt(String.valueOf(c.getUid().getUid())));
-                jcom.put("uname", c.getUid().getUname());
-                if (c.getUid().getProfilePic() != null) {
-                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
-                }
-                jcom.put("content", c.getContent());
-                jcom.put("timestamp", c.getTimestamp());
-                jcom.put("comment_id", SecureHelper
-                        .encrypt(String.valueOf(c.getCommentId())));
-                jcomments.put(jcom);
+//            JSONArray jcomments = new JSONArray();
+//            for (Comment c : comments) {
+//                JSONObject jcom = new JSONObject();
+//                jcom.put("uid",
+//                        SecureHelper
+//                                .encrypt(String.valueOf(c.getUid().getUid())));
+//                jcom.put("uname", c.getUid().getUname());
+//                if (c.getUid().getProfilePic() != null) {
+//                    jcom.put("profile_pic", "http://10.114.32.118/profile_pic/" + c.getUid().getProfilePic());
+//                }
+//                jcom.put("content", c.getContent());
+//                jcom.put("timestamp", c.getTimestamp());
+//                jcom.put("comment_id", SecureHelper
+//                        .encrypt(String.valueOf(c.getCommentId())));
+//                jcomments.put(jcom);
+//            }
+            boolean liked = false;
+            if (post.getUserCollection().contains(user)) {
+                liked = true;
             }
 
-            json.put("comments", jcomments);
+            json.put("liked", liked);
+//            json.put("comments", jcomments);
 
             json.put("likes", post.getUserCollection().size());
 
