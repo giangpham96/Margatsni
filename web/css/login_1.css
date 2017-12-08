@@ -78,9 +78,12 @@ input{
     height: 1.8rem;
     width: 15rem;
     padding-left: 0.3rem;
+    border-radius: 1rem;
 }
 
 p{
+    display: block;
+    width: 100%;
     font-size: 0.7rem;
     color: red;
     margin: 0;
@@ -93,10 +96,11 @@ button{
     background: #9d1a1f;
     color: white;
     border:0;
+    border-radius: 1rem;
 }
 
 button:hover{
-    box-shadow: 0px 0px 10px 1px black;
+    box-shadow: 2px 2px 0px 1px black;
     background-color: #ca2026;
 }
 
