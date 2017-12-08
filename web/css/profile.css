@@ -260,7 +260,7 @@ input,select,textarea{
 .margastni__search {
   margin-left: auto;
   margin-right: auto;  
-    padding-left: 0;
+  padding-right: 10em;
 }
 .margastni {
   height: 46px;
