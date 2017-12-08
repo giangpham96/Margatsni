@@ -4,12 +4,13 @@ const panels = document.querySelectorAll('.tab');
 let validsu = false;
 let validli = false;
 
-for(var i = 0; i < tabs.length; i++) {
-  var tab = tabs[i];
+for(let i = 0; i < tabs.length; i++) {
+  let tab = tabs[i];
   setTabHandler(tab, i);
 }
-function setTabHandler(tab, tabPos) {
-  tab.onclick = function() {
+
+const setTabHandler = (tab, tabPos) => {
+  tab.addEventListener('click', (evt) => {
     for(i = 0; i < tabs.length; i++) {
       tabs[i].className = 'inactive';
     }
@@ -18,7 +19,7 @@ function setTabHandler(tab, tabPos) {
       panels[i].className = 'hidden';
     }
     panels[tabPos].className = 'active-panel tab';
-  };
+  });
 }
 
 
@@ -48,12 +49,12 @@ const initViews = () => {
     setupSignup()
 }
 
-const setupLogin = function () {
-    const loginForm = document.getElementById('logInbtn')
-    loginForm.onclick = function(){
+const setupLogin = () => {
+    const loginForm = document.querySelector('#logInbtn')
+    loginForm.addEventListener('click', (evt) => {
         const emailInput = document.querySelector('#logInForm > input[type="email"]');
         const pwInput = document.querySelector('#logInForm > input[type="password"]');
-        const errorp =  document.getElementById('errorli');
+        const errorp =  document.querySelector('#errorli');
         
         fetch('https://10.114.32.118:8181/GET/api/authorized', {
             headers: {
@@ -82,16 +83,16 @@ const setupLogin = function () {
                     console.log(err)
                 });
 
-    };
+    });
 };
 
-const setupSignup = function () {
-    const loginForm = document.getElementById('signUpbtn')
-    loginForm.onclick = function(){
+const setupSignup = () => {
+    const loginForm = document.querySelector('#signUpbtn')
+    loginForm.addEventListener('click', (evt) => {
         const unameInput = document.querySelector('#signUpForm > input[type="text"]');
         const emailInput = document.querySelector('#signUpForm > input[type="email"]');
         const pwInput = document.querySelector('#signUpForm > input[type="password"]');
-        const errorp =  document.getElementById('errorsu');
+        const errorp =  document.querySelector('#errorsu');
         
         fetch('https://10.114.32.118:8181/GET/api/signup', {
             headers: {
@@ -120,16 +121,15 @@ const setupSignup = function () {
                     console.log(err)
                 });
 
-    };
+    });
 };
 
-
-function getCookie(cname) {
+const getCookie = (cname) => {
     const name = cname + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
