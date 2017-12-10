@@ -47,7 +47,7 @@ public class FeedResource {
         List<Post> posts = pb.getPostsInPage(page);
         long uid = -1;
         User user = new User(-1L);
-        if (authToken != null) {
+        if (authToken != null && !authToken.isEmpty()) {
             String originalAuth;
             try {
                 originalAuth = SecureHelper.decrypt(authToken);

@@ -53,7 +53,7 @@ const setupLogin = () => {
                     return response.json();
                 })
                 .then((json) => {
-                    if (json.message) {
+                    if (json.message || json.error) {
                         errorp.innerHTML = json.message;
                         errorp.className = "visible";
                         console.log(json.message);
@@ -124,7 +124,7 @@ const setupSignup = () => {
                     return response.json();
                 })
                 .then((json) => {
-                    if (json.message) {
+                    if (json.message  || json.error) {
                         errorp.innerHTML = json.message;
                         errorp.className = "visible";
                         console.log(json.message);

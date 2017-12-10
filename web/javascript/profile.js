@@ -11,9 +11,70 @@ const setupNavbar = () => {
     home.addEventListener('click', () => {
         window.location.href = 'https://10.114.32.118:8181/GET/feed.html'
     });
-}
+};
 
-setupNavbar();
+const setupUpload = () => {
+    const fileinput = document.getElementById('file-input');
+    fileinput.onchange = () => {
+        const pick = document.getElementById('pick-button');
+        if (fileinput.value == '') {
+            pick.setAttribute('src', 'image/ic_pick.png');
+            return;
+        }
+        pick.setAttribute('src', 'image/ic_selected.png');
+    };
+    const fileupload = document.getElementById('upload-button');
+    fileupload.onclick = () => {
+        if (fileinput.value == '')
+            return;
+
+        const caption = document.getElementById('caption');
+        const data = new FormData();
+
+        data.append('file', fileinput.files[0]);
+        data.append('caption', caption.value);
+        const settings = {
+            method: 'POST',
+            body: data,
+            credentials: 'include',
+            headers: {
+                'auth-token': getCookie('auth-token')
+            }
+        };
+
+        fetch('https://10.114.32.118:8181/GET/api/post/new', settings)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    caption.value = '';
+                    clearFileInput(fileinput);
+                    const article = createArticle(json, json);
+                    const root = document.getElementsByClassName('wrapper center padding-40')[0];
+                    if (root.children[1])
+                        root.insertBefore(article, root.children[1]);
+                    else
+                        root.appendChild(article)
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+    }
+};
+window.onload = () => {
+    setupNavbar();
+    setupUpload();
+};
+
+const clearFileInput = (ctrl) => {
+    try {
+        ctrl.value = null;
+    } catch (ex) {
+    }
+    if (ctrl.value) {
+        ctrl.parentNode.replaceChild(ctrl.cloneNode(true), ctrl);
+    }
+};
 
 const loadPage = () => {
     fetch(`https://10.114.32.118:8181/GET/api/profile/me?page=${page}`, {
@@ -23,8 +84,10 @@ const loadPage = () => {
             'auth-token': getCookie('auth-token')
         }
     }).then((response) => {
+        if (response.status !== 200) {
+            throw Error(response.status);
+        }
         return response.json();
-        
     }).then((json) => {
         const avatar = document.getElementsByClassName('avatar')[0];
         const userIcon = document.getElementsByClassName('profile')[1];
@@ -40,141 +103,147 @@ const loadPage = () => {
         const posts = json.post.posts;
 
         posts.forEach((p) => {
-            const article = document.createElement('article');
-            article.className = 'item white shadow cf';
-
-            const divheader = document.createElement('div');
-            divheader.className = 'row padding';
-
-            const divavatar = document.createElement('div');
-            divavatar.className = 'col-1 col-persist';
-
-            const imgavatar = document.createElement('img');
-            imgavatar.className = 'pull-left width-100 round avatar';
-
-            if (json.profile_pic) {
-                imgavatar.setAttribute('src', json.profile_pic);
-            } else {
-                imgavatar.setAttribute('src', './image/avatar.png');
-            }
-
-            divavatar.appendChild(imgavatar);
-            divheader.appendChild(divavatar);
-
-            const divusername = document.createElement('div');
-            divusername.className = "col-11 col-persist gutter-h-10 padding-top-15";
-
-            const h5username = document.createElement('h5');
-            h5username.className = "text-15 text700 pull-left red-text";
-            h5username.innerHTML = json.uname;
-
-            const ats = document.createElement('a');
-            ats.className = 'pull-right label fill-white text-gray';
-            ats.innerHTML = timeSince(p.timestamp);
-
-            divusername.appendChild(h5username);
-            divusername.appendChild(ats);
-            divheader.appendChild(divusername);
-
-            article.appendChild(divheader);
-
-            const divcontent = document.createElement('div');
-            divcontent.className = 'row';
-
-            const pcaption = document.createElement('p');
-            pcaption.className = 'padding -padding-top';
-            if (p.caption)
-                pcaption.innerHTML = p.caption;
-
-            divcontent.appendChild(pcaption);
-            const img = document.createElement('img');
-            img.className = 'pull-left width-100';
-            img.setAttribute('src', p.src);
-
-            divcontent.appendChild(img);
-            article.appendChild(divcontent);
-
-            if (p.can_like) {
-                const divLike = document.createElement('div');
-                divLike.className = 'row padding';
-
-                const divLikeChild = document.createElement('div');
-                divLikeChild.className = 'pull-left';
-
-                const alikebutton = document.createElement('a');
-                alikebutton.className = "btn icon round text-red fill-silver";
-
-                const like_icon = (p.liked)
-                        ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
-                        : 'https://image.flaticon.com/icons/png/128/126/126471.png';
-                alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
-                
-                
-                divLikeChild.appendChild(alikebutton);
-
-                const alikeno = document.createElement('a');
-                alikeno.className = "btn white hover-disable text-red text600";
-
-                alikeno.innerHTML = p.likes;
-
-                alikebutton.addEventListener('click', () => {
-                    like(alikebutton, alikeno, p.postId);
-                });
-                
-                divLikeChild.appendChild(alikeno);
-
-                divLike.appendChild(divLikeChild);
-
-                article.appendChild(divLike);
-            }
-            const divComment = document.createElement('div');
-
-            const ulComment = document.createElement('ul');
-            ulComment.className = 'overflow';
-
-            p.comments.forEach((c) => {
-                const li = renderComment(c);
-                ulComment.appendChild(li);
-            });
-
-            divComment.appendChild(ulComment);
-
-            if (p.can_comment) {
-                const commentForm = document.createElement('form');
-                commentForm.className = 'form relative padding';
-                const divAvaComment = document.createElement('div');
-                divAvaComment.className = 'col-1 col-persist';
-                const imgAvaComment = document.createElement('img');
-                imgAvaComment.className = 'pull-left width-100 round avatar';
-                imgAvaComment.setAttribute('src', (json.profile_pic) ? json.profile_pic : "./image/avatar.png");
-                divAvaComment.appendChild(imgAvaComment);
-                commentForm.appendChild(divAvaComment);
-
-                const divCommentText = document.createElement('div');
-                divCommentText.className = 'col-9 col-persist gutter-h-10 padding-top-5';
-                const textArea = document.createElement('textarea');
-                textArea.setAttribute('placeholder', "Write a comment...");
-                divCommentText.appendChild(textArea);
-                commentForm.appendChild(divCommentText);
-
-                const divCommentButton = document.createElement('div');
-                divCommentButton.className = 'col-2 col-persist';
-                divCommentButton.innerHTML = `<a class="btn l icon round text-gray hover-text-red">
-                                <img style="height: 1.5em; width:1.5em; padding: 5px;" src="./image/ic_send.png"/>
-                            </a>`;
-
-                divCommentButton.addEventListener('click', () => {
-                    createComment(ulComment, textArea, p.postId);
-                });
-                commentForm.appendChild(divCommentButton);
-                divComment.appendChild(commentForm);
-            }
-            article.appendChild(divComment);
+            const article = createArticle(json, p);
             root.appendChild(article);
         });
     }).catch((err) => {
         console.log(err);
+        window.location.href = 'https://10.114.32.118:8181/GET/';
     });
+};
+
+const createArticle = (json, p) => {
+    const article = document.createElement('article');
+    article.className = 'item white shadow cf';
+
+    const divheader = document.createElement('div');
+    divheader.className = 'row padding';
+
+    const divavatar = document.createElement('div');
+    divavatar.className = 'col-1 col-persist';
+
+    const imgavatar = document.createElement('img');
+    imgavatar.className = 'pull-left width-100 round avatar';
+
+    if (json.profile_pic) {
+        imgavatar.setAttribute('src', json.profile_pic);
+    } else {
+        imgavatar.setAttribute('src', './image/avatar.png');
+    }
+
+    divavatar.appendChild(imgavatar);
+    divheader.appendChild(divavatar);
+
+    const divusername = document.createElement('div');
+    divusername.className = "col-11 col-persist gutter-h-10 padding-top-15";
+
+    const h5username = document.createElement('h5');
+    h5username.className = "text-15 text700 pull-left red-text";
+    h5username.innerHTML = json.uname;
+
+    const ats = document.createElement('a');
+    ats.className = 'pull-right label fill-white text-gray';
+    ats.innerHTML = timeSince(p.timestamp);
+
+    divusername.appendChild(h5username);
+    divusername.appendChild(ats);
+    divheader.appendChild(divusername);
+
+    article.appendChild(divheader);
+
+    const divcontent = document.createElement('div');
+    divcontent.className = 'row';
+
+    const pcaption = document.createElement('p');
+    pcaption.className = 'padding -padding-top';
+    if (p.caption)
+        pcaption.innerHTML = p.caption;
+
+    divcontent.appendChild(pcaption);
+    const img = document.createElement('img');
+    img.className = 'pull-left width-100';
+    img.setAttribute('src', p.src);
+
+    divcontent.appendChild(img);
+    article.appendChild(divcontent);
+
+    if (p.can_like) {
+        const divLike = document.createElement('div');
+        divLike.className = 'row padding';
+
+        const divLikeChild = document.createElement('div');
+        divLikeChild.className = 'pull-left';
+
+        const alikebutton = document.createElement('a');
+        alikebutton.className = "btn icon round text-red fill-silver";
+
+        const like_icon = (p.liked)
+                ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
+                : 'https://image.flaticon.com/icons/png/128/126/126471.png';
+        alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
+
+
+        divLikeChild.appendChild(alikebutton);
+
+        const alikeno = document.createElement('a');
+        alikeno.className = "btn white hover-disable text-red text600";
+
+        alikeno.innerHTML = p.likes;
+
+        alikebutton.addEventListener('click', () => {
+            like(alikebutton, alikeno, p.postId);
+        });
+
+        divLikeChild.appendChild(alikeno);
+
+        divLike.appendChild(divLikeChild);
+
+        article.appendChild(divLike);
+    }
+    const divComment = document.createElement('div');
+
+    const ulComment = document.createElement('ul');
+    ulComment.className = 'overflow';
+
+    p.comments.forEach((c) => {
+        const li = renderComment(c);
+        ulComment.appendChild(li);
+    });
+
+    divComment.appendChild(ulComment);
+
+    if (p.can_comment) {
+        const commentForm = document.createElement('form');
+        commentForm.className = 'form relative padding';
+        const divAvaComment = document.createElement('div');
+        divAvaComment.className = 'col-1 col-persist';
+        const imgAvaComment = document.createElement('img');
+        imgAvaComment.className = 'pull-left width-100 round avatar';
+        imgAvaComment.setAttribute('src', (json.profile_pic) ? json.profile_pic : "./image/avatar.png");
+        divAvaComment.appendChild(imgAvaComment);
+        commentForm.appendChild(divAvaComment);
+
+        const divCommentText = document.createElement('div');
+        divCommentText.className = 'col-9 col-persist gutter-h-10 padding-top-5';
+        const textArea = document.createElement('textarea');
+        textArea.setAttribute('placeholder', "Write a comment...");
+        divCommentText.appendChild(textArea);
+        commentForm.appendChild(divCommentText);
+
+        const divCommentButton = document.createElement('div');
+        divCommentButton.className = 'col-2 col-persist';
+        divCommentButton.innerHTML = `<a class="btn l icon round text-gray hover-text-red">
+                                <img style="height: 1.5em; width:1.5em; padding: 5px;" src="./image/ic_send.png"/>
+                            </a>`;
+
+        divCommentButton.addEventListener('click', () => {
+            createComment(ulComment, textArea, p.postId);
+        });
+        commentForm.appendChild(divCommentButton);
+        divComment.appendChild(commentForm);
+    }
+    article.appendChild(divComment);
+    return article;
 };
 
 const getCookie = (cname) => {
@@ -194,7 +263,7 @@ const getCookie = (cname) => {
 };
 
 const createComment = (ulComment, textArea, post_id) => {
-    if (textArea.value.trim()==='')
+    if (textArea.value.trim() === '')
         return;
     fetch('https://10.114.32.118:8181/GET/api/comment', {
         headers: {
@@ -242,7 +311,7 @@ const renderComment = (c) => {
                                 </div>`;
     li.appendChild(divInfo);
     li.innerHTML += c.content;
-    
+
     return li;
 }
 
@@ -254,7 +323,7 @@ const like = (alikebutton, alikeno, post_id) => {
         },
         credentials: 'include',
         method: 'POST',
-        body: `post=${post_id}`
+        body: `post=${encodeURIComponent(post_id)}`
     })
             .then((response) => {
                 return response.json();
@@ -262,8 +331,8 @@ const like = (alikebutton, alikeno, post_id) => {
             .then((json) => {
                 if (!json.message) {
                     const like_icon = (json.liked)
-                        ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
-                        : 'https://image.flaticon.com/icons/png/128/126/126471.png';
+                            ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
+                            : 'https://image.flaticon.com/icons/png/128/126/126471.png';
                     alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
                     alikeno.innerHTML = json.likes;
                     return;
@@ -276,30 +345,32 @@ const like = (alikebutton, alikeno, post_id) => {
 
 const timeSince = (date) => {
 
-  var seconds = Math.floor((new Date() - date) / 1000);
+    let seconds = Math.floor((new Date() - date) / 1000);
 
-  var interval = Math.floor(seconds / 31536000);
+    let interval = Math.floor(seconds / 31536000);
 
-  if (interval > 1) {
-    return interval + " years ago";
-  }
-  interval = Math.floor(seconds / 2592000);
-  if (interval > 1) {
-    return interval + " months ago";
-  }
-  interval = Math.floor(seconds / 86400);
-  if (interval > 1) {
-    return interval + " days ago";
-  }
-  interval = Math.floor(seconds / 3600);
-  if (interval > 1) {
-    return interval + " hours ago";
-  }
-  interval = Math.floor(seconds / 60);
-  if (interval > 1) {
-    return interval + " minutes ago";
-  }
-  return Math.floor(seconds) + " seconds";
-}
+    if (interval > 1) {
+        return interval + " years ago";
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + " months ago";
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + " days ago";
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours ago";
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes ago";
+    }
+    if (seconds < 0)
+        seconds = 0;
+    return Math.floor(seconds) + " seconds";
+};
 
 loadPage();
