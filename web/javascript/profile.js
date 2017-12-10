@@ -24,7 +24,9 @@ const loadPage = () => {
         }
     }).then((response) => {
         return response.json();
-        
+        if (response.status !== 200) {
+            throw Error(response.status);
+        }
     }).then((json) => {
         const avatar = document.getElementsByClassName('avatar')[0];
         const userIcon = document.getElementsByClassName('profile')[1];
@@ -174,6 +176,7 @@ const loadPage = () => {
         });
     }).catch((err) => {
         console.log(err);
+        window.location.href = 'https://10.114.32.118:8181/GET/';
     });
 };
 
@@ -276,9 +279,9 @@ const like = (alikebutton, alikeno, post_id) => {
 
 const timeSince = (date) => {
 
-  var seconds = Math.floor((new Date() - date) / 1000);
+  const seconds = Math.floor((new Date() - date) / 1000);
 
-  var interval = Math.floor(seconds / 31536000);
+  const interval = Math.floor(seconds / 31536000);
 
   if (interval > 1) {
     return interval + " years ago";

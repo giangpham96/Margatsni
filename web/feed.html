@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head>
-	
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="./css/feed.css" />
-    <link href='http://fonts.googleapis.com/css?family=Cambo' rel='stylesheet' type='text/css'>
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
-	<script type="text/javascript" src="./javascript/feed.js">
-        
-    </script>	
-</head>
-<body onload="setupBlocks();" >
-    <ul class="margastni">
-        <li><img class="profile" src="image/logo.png"></li> 
-        <li class="slogan" onclick="moveToFeed()">Margastni</li>
-        <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
-        <li class="search"></li>
-        <li><a href="profile.html"><img class="profile" src="image/avatar.png"></a></li>
-    </ul>
-    <div style="justify-content: center" id="content">
-<!--        <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
-    <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
-	<img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
-	<img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">-->
-    </div>
-    
-    <script type="text/javascript" src="./javascript/feed.js"></script>
-        
-</body>
+    <head>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="./css/feed.css" />
+        <link rel="stylesheet" type="text/css" href="./css/profile.css" />
+        <link href='http://fonts.googleapis.com/css?family=Cambo' rel='stylesheet' type='text/css'>
+        <script type="text/javascript" src="./javascript/feed.js">
+
+        </script>	
+    </head>
+    <body onload="setupBlocks();" >
+        <ul class="margastni">
+            <li><img class="profile" src="image/logo.png"></li> 
+            <li class="slogan" onclick="moveToFeed()">Margastni</li>
+            <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
+            <li class="search"></li>
+            <li><a href="profile.html"><img class="profile" src="image/avatar.png"></a></li>
+        </ul>
+        <div style="justify-content: center" id="content">
+            <!--        <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">
+                <img class="block" src="http://static4.businessinsider.com/image/56f147b352bcd0210c8b7f1d-768-960/10391525_10154089679044090_4967653839230844471_n.jpg">
+                    <img class="block" src="http://static4.uk.businessinsider.com/image/5926c187012b0020008b45fa-480/gettyimages-626927082.jpg">
+                    <img class="block" src="https://dm.victoriassecret.com/p/760x1013/tif/d6/4e/d64e8d24658b4d098b59c39715287571/027_F17_BRA_104_LR_012_e5298064.jpg">-->
+        </div>
+        <div class="modal">
+            <h1 class="closeBtn" onclick="closeModal()">&#215;</h1>
+            <section class="post">
+            </section>
+        </div>
+        <script type="text/javascript" src="./javascript/feed.js"></script>
+
+    </body>
 </html>
