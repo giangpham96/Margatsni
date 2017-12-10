@@ -51,8 +51,8 @@ const setupUpload = () => {
                     clearFileInput(fileinput);
                     const article = createArticle(json, json);
                     const root = document.getElementsByClassName('wrapper center padding-40')[0];
-                    if (root.children[1])
-                        root.insertBefore(article, root.children[1]);
+                    if (root.children[2])
+                        root.insertBefore(article, root.children[3]);
                     else
                         root.appendChild(article)
                 })
@@ -62,8 +62,30 @@ const setupUpload = () => {
     }
 };
 
+const updateBio = () => {
+    const textbox = document.getElementById('BIO');
+    const value = textbox.value;
+    if(!value)
+        return;
+    fetch(`https://10.114.32.118:8181/GET/api/profile`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'auth-token': getCookie('auth-token')
+        },
+        body:`fav_quote=${value}`
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        window.location.href = 'https://10.114.32.118:8181/GET/profile.html'
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 const setupProfilePic = () => {
-    const avatar = document.getElementsByClassName('avatar')[0];
+    const avatar = document.getElementById('profile_pic');
     avatar.addEventListener('click', () => {
         const modal = document.getElementsByClassName('modal')[0];
         modal.style.display = 'block';
@@ -134,13 +156,22 @@ const loadPage = () => {
         return response.json();
     }).then((json) => {
         const avatar = document.getElementsByClassName('avatar')[0];
+        const avatar1 = document.getElementById('profile_pic');
         const userIcon = document.getElementsByClassName('profile')[1];
         //set avatar picture of profile page
+        const now = Math.floor(Date.now());
         if (json.profile_pic) {
-            avatar.setAttribute('src', json.profile_pic);
-            userIcon.setAttribute('src', json.profile_pic);
+            avatar.setAttribute('src', json.profile_pic+`?${now}`);
+            avatar1.setAttribute('src', json.profile_pic+`?${now}`);
+            userIcon.setAttribute('src', json.profile_pic+`?${now}`);
         }
-
+        const bioText = document.getElementById('bio_display');
+        if (json.fav_quote) {
+            bioText.innerHTML = json.fav_quote;
+        }
+        const uname = document.getElementById('uname_display');
+        uname.innerHTML = json.uname;
+        
         const root = document.getElementsByClassName('wrapper center padding-40')[0];
 
 
