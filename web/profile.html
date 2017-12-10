@@ -7,6 +7,7 @@
         </title>
         <link rel="stylesheet" href="./css/profile.css">
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <nav>
@@ -18,9 +19,14 @@
                 <li><a href="profile.html"><img class="profile" src="image/avatar.png"></a></li>
             </ul>
         </nav>
-        <!-- Social Wrapper Start -->
-        <div class="wrapper center padding-40">
+        
+            
 
+            
+            
+        
+        <!-- Social Wrapper Start -->
+        <div class="wrapper center padding-40">            
             <!-- Social Form Start -->
             <section class="white shadow padding-10 margin-bottom">
                 <form class="form relative">
@@ -42,7 +48,44 @@
                 </form>
             </section>
             <!-- Social Form End -->
+            <!--Edit profile start-->
+            <section class="white shadow padding-10 margin-bottom">
+                <form class="form relative">
+                    <div class="col-2 col-persist">
+                        <img class=" pull-left width-100 round " src="./image/avatar.png" />
 
+                    </div>
+                    <ul class="col-9 col-persist ">
+                        <li ><h5>USERNAME</h5></li>
+                        <li >Bio Goes here if not then empty</li>
+                        
+                        <a>Post: </a> <a>125</a><br>
+                        <a>Like: </a><a>12</a>
+                    </ul>   
+                    <div class="col-2 col-persist">
+                        <a href="#popup1" class="center btn l icon round text-gray hover-text-red">
+                            <i class="center fa fa-pencil-square-o"></i>
+                        </a>
+                        <div id="popup1" class="overlay">
+	                       <div class="popup">
+		                      <h2>Edit your profile</h2>
+		                      <a class="close" href="#">&times;</a>
+		                          <div class="content">
+			                         <form>
+                                        <input id="USERNAME" placeholder="Username" type="text"><br>
+                                        <input id="BIO" placeholder="Say something about your self" type="text"><br>
+                                         <a>Upload profile picture</a>
+                                        <a class="btn l icon round text-gray hover-text-red">  
+                                            <i class="fa fa-camera"></i>
+                                        </a>
+                                     </form>
+                                  </div>
+	                       </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <!--Edit profile end-->
             <!-- Feed Item Start -->
             <!--            <article class="item white shadow cf">
             
