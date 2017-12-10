@@ -61,9 +61,53 @@ const setupUpload = () => {
                 });
     }
 };
+
+const setupProfilePic = () => {
+    const avatar = document.getElementsByClassName('avatar')[0];
+    avatar.addEventListener('click', () => {
+        const modal = document.getElementsByClassName('modal')[0];
+        modal.style.display = 'block';
+    });
+    const btnUploadProfile = document.getElementById('update-profile');
+    const btnCancel = document.getElementById('cancel');
+    btnCancel.addEventListener('click', () => {
+        const modal = document.getElementsByClassName('modal')[0];
+        modal.style.display = "none";
+    });
+    btnUploadProfile.addEventListener('click', () => {
+        const fileinput = document.getElementById('profile-input');
+        if (fileinput.value == '')
+            return;
+        const data = new FormData();
+        data.append('file', fileinput.files[0]);
+        const settings = {
+            method: 'POST',
+            body: data,
+            credentials: 'include',
+            headers: {
+                'auth-token': getCookie('auth-token')
+            }
+        };
+
+        fetch('https://10.114.32.118:8181/GET/api/profile/profilepic', settings)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    location.reload(true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        const modal = document.getElementsByClassName('modal')[0];
+        modal.style.display = "none";
+    });
+};
+
 window.onload = () => {
     setupNavbar();
     setupUpload();
+    setupProfilePic();
 };
 
 const clearFileInput = (ctrl) => {

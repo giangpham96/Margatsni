@@ -294,6 +294,11 @@ input[type=text]:focus {
     width: 35px;
     border-radius: 100%;
 }
+.flex-right {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: flex-end
+}
 ol, ul {
 	list-style: none;
 }
