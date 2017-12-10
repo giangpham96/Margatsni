@@ -29,15 +29,21 @@
 
                     </div>
                     <div class="col-9 col-persist gutter-h-10 padding-top-5">
-                        <textarea  placeholder="What's new?"></textarea>
+                        <textarea  id="caption" placeholder="What's new?"></textarea>
                     </div>
                     <div class="col-2 col-persist">
                         <a class="btn l icon round text-gray hover-text-red">
-                            <i class="fa fa-camera"></i>
+                            <img id="pick-button" style="height: 1.5em; width:1.5em; padding: 5px;"
+                                 onclick="document.getElementById('file-input').click();"
+                                 src="./image/ic_pick.png">
                         </a>
                         <a class="btn l icon round text-gray hover-text-red">
-                            <i class="fa fa-video-camera"></i>
+                            <img id="upload-button" style="height: 1.5em; width:1.5em; padding: 5px;"
+                                 src="./image/ic_upload.png">
                         </a>
+                        <input id="file-input" type="file"
+                               style="display: none;"
+                               accept="image/*"/>
                     </div>
                 </form>
             </section>
