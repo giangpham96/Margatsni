@@ -188,7 +188,7 @@ const deletePost = (postId) => {
             'Content-Type': 'application/x-www-form-urlencoded',
             'auth-token': getCookie('auth-token')
         },
-        body: `post=${postId}`
+        body: `post=${encodeURIComponent(postId)}`
     }).then((response) => {
         return response.json();
     }).then((json) => {

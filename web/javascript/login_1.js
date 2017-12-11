@@ -132,7 +132,7 @@ const setupSignup = () => {
                     }
                     document.cookie = "auth-token" + "=" + json['auth-token'] + ";" + "path=/";
 
-                    //window.location.href = "https://10.114.32.118:8181/GET/feed.html"
+                    window.location.href = "https://10.114.32.118:8181/GET/feed.html"
                 })
                 .catch((err) => {
                     console.log(err);
