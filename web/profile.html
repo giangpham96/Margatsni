@@ -7,27 +7,26 @@
         </title>
         <link rel="stylesheet" href="./css/profile.css">
         <link rel="stylesheet" href="./css/feed.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <nav style="margin-bottom: 20px">
-            <ul class="margastni">
-                <li><img class="profile" src="image/logo.png"></li> 
-                <li class="slogan">Margastni</li>
-                <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
-                <li class="search"></li>
-                <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
+        <ul class="margastni" style="margin-bottom: 20px;">
+            <li><img class="profile" src="image/logo.png"></li> 
+            <li class="slogan" onclick="moveToFeed()">Margastni</li>
+            <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
+            <li class="search"></li>
+            <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
                     <div class="dropdown-content">
                       <a class="line1" style="text-decoration: none" href="https://10.114.32.118:8181/GET/profile.html">Profile Page</a><br>
                       <a class="line2" style="text-decoration: none" onclick="logout()">Log Out</a>
                     </div>
             </li>
-            </ul>
-        </nav>
+        </ul>
 
         <!-- Social Wrapper Start -->
-        <div class="wrapper center padding-40">            
+        <div class="wrapper center padding-40" id="social">            
             <!-- Social Form Start -->
             <div class="modal" style="z-index: 100">
                 <section class="white shadow padding-10 margin-bottom flex-right" 

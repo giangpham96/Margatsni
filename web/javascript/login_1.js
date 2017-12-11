@@ -188,3 +188,7 @@ fetch('https://10.114.32.118:8181/GET/api/authorized', {
     .catch((err) => {
         console.log(err);
     });
+
+document.querySelector('#contbtn').addEventListener('click', () => {
+    window.location.href = "https://10.114.32.118:8181/GET/feed.html"
+});

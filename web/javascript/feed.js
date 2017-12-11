@@ -20,6 +20,7 @@ const setupBlocks = () => {
 const positionBlocks = () => {
     let block = document.getElementsByClassName("block");
     for (let i = 0, max = block.length; i < max; i++) {
+        
         let min = Array.min(blocks);
 
         let index = blocks.indexOf(min);
@@ -61,8 +62,8 @@ const loadFeed = () => {
             if (post.complete) {
                 setupBlocks();
             } else {
-                post.addEventListener('load', setupBlocks());
-                post.addEventListener('error', setupBlocks());
+                post.addEventListener('load', setupBlocks);
+                post.addEventListener('error', setupBlocks);
             }
         });
         setupBlocks();
@@ -167,7 +168,7 @@ const renderComment = (c) => {
 
     divInfo.appendChild(divImg);
 
-    divInfo.innerHTML += `<div class="col-11 col-persist gutter-h-10 padding-top-15">
+    divInfo.innerHTML += `<div class="col-11 col-persist gutter-h-10">
                                     
                                     <h5 class="text-15 text700 pull-left red-text">${c.uname}</h5>
                                     <a class="pull-right label fill-white text-gray">${timeSince(c.timestamp)}</a>
@@ -214,7 +215,7 @@ const openModal = (post) => {
                 divheader.appendChild(divavatar);
 
                 const divusername = document.createElement('div');
-                divusername.className = "col-11 col-persist gutter-h-10 padding-top-15";
+                divusername.className = "col-11 col-persist gutter-h-10";
 
                 const h5username = document.createElement('h5');
                 h5username.className = "text-15 text700 pull-left red-text";
@@ -365,3 +366,5 @@ const logout = () => {
     });
     window.location.href = 'https://10.114.32.118:8181/GET/'
 };
+
+window.body.onload = setupBlocks;

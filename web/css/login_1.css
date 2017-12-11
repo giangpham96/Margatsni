@@ -7,6 +7,10 @@
 
 }
 
+*{
+    font-family: 'Roboto Slab', serif;  
+}
+
 body,html{
     height: 100%;
     margin: 0;
@@ -15,7 +19,7 @@ body,html{
 
 body{
     background-image: url(../image/bg.jpg);
-    background-size: 100%;
+    background-size: cover;
 }
 
 .container{
@@ -27,18 +31,18 @@ body{
 }
 
 .login-box{
-    background: #fff;
-    box-shadow: 3px 3px 3px;
+    background: #ffffff82;
     display: flex;
     flex-direction: column;
     padding: 1rem 2rem;
-    border:2px solid #ddd;
+    border-radius: 0.5rem;
 }
 
 h1{
     font-family: 'richardmurrayroman';
     font-size: 4rem;
     margin: 1rem;
+    text-align: center;
 }
 
 ul{
@@ -51,15 +55,14 @@ ul{
 li{
     text-align: center;
     width:50%;
-    font-size: 2rem;
+    font-size: 1.3rem;
 }
 
 a{
     display: inline-block;
     width: 100%;
     text-decoration: none;
-    border-radius: 1rem;
-    font-family: sans-serif;
+    border-radius: 0.3rem;
 }
 
 .tab{
@@ -78,7 +81,7 @@ input{
     height: 1.8rem;
     width: 15rem;
     padding-left: 0.3rem;
-    border-radius: 1rem;
+    border:none;
 }
 
 p{
@@ -100,13 +103,11 @@ button{
 }
 
 button:hover{
-    box-shadow: 2px 2px 0px 1px black;
     background-color: #ca2026;
 }
 
 .inactive{
     color: #711417;
-    text-decoration: underline;
 }
 
 .active{
