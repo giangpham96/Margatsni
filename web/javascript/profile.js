@@ -199,9 +199,9 @@ const createArticle = (json, p) => {
 
     const imgavatar = document.createElement('img');
     imgavatar.className = 'pull-left width-100 round avatar';
-
+    const now = Math.floor(Date.now());
     if (json.profile_pic) {
-        imgavatar.setAttribute('src', json.profile_pic);
+        imgavatar.setAttribute('src', json.profile_pic+`?${now}`);
     } else {
         imgavatar.setAttribute('src', './image/avatar.png');
     }
@@ -294,7 +294,8 @@ const createArticle = (json, p) => {
         divAvaComment.className = 'col-1 col-persist';
         const imgAvaComment = document.createElement('img');
         imgAvaComment.className = 'pull-left width-100 round avatar';
-        imgAvaComment.setAttribute('src', (json.profile_pic) ? json.profile_pic : "./image/avatar.png");
+        const now = Math.floor(Date.now());
+        imgAvaComment.setAttribute('src', (json.profile_pic) ? json.profile_pic+`?${now}` : "./image/avatar.png");
         divAvaComment.appendChild(imgAvaComment);
         commentForm.appendChild(divAvaComment);
 
@@ -446,6 +447,16 @@ const timeSince = (date) => {
     if (seconds < 0)
         seconds = 0;
     return Math.floor(seconds) + " seconds";
+};
+
+const logout = () => {
+    document.cookie.split(";")
+            .forEach((c) => 
+    { 
+        document.cookie = c.replace(/^ +/, "")
+                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    window.location.href = 'https://10.114.32.118:8181/GET/'
 };
 
 loadPage();

@@ -65,7 +65,7 @@ const loadFeed = () => {
                 post.addEventListener('error', setupBlocks());
             }
         });
-//        setupBlocks();
+        setupBlocks();
         page++;
     }).catch((err) => console.log(err));
 };
@@ -354,4 +354,14 @@ const moveToFeed = () => window.location.href = 'https://10.114.32.118:8181/GET/
 const closeModal = () => {
     const modal = document.getElementsByClassName('modal')[0];
     modal.style.display = "none";
+};
+
+const logout = () => {
+    document.cookie.split(";")
+            .forEach((c) => 
+    { 
+        document.cookie = c.replace(/^ +/, "")
+                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    window.location.href = 'https://10.114.32.118:8181/GET/'
 };
