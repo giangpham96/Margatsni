@@ -94,7 +94,7 @@ public class FeedResource {
                 jpost.put("caption", post.getCaption());
 
                 boolean ownedPost = false;
-                if (post.getUid().getUid() == uid || user.getIsAdmin()) {
+                if (post.getUid().getUid() == uid || (uid != -1 && user.getIsAdmin())) {
                     ownedPost = true;
                 }
 
@@ -144,8 +144,13 @@ public class FeedResource {
                 jpost.put("can_like", canLike);
                 jpost.put("can_comment", canComment);
             } catch (Exception ex) {
+                String err ="";
+                for (StackTraceElement e : ex.getStackTrace()) {
+                    err += e + "\n";
+                }
+                err += ex.getCause();
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("{\"error\":\"internal error occurs\"}")
+                        .entity("{\"error\":\"internal error occurs"+err+"\"}")
                         .build();
             }
             json.put(jpost);
