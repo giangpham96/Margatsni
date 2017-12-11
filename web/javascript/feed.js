@@ -188,7 +188,7 @@ const deletePost = (postId) => {
             'Content-Type': 'application/x-www-form-urlencoded',
             'auth-token': getCookie('auth-token')
         },
-        body:`post=${postId}`
+        body: `post=${postId}`
     }).then((response) => {
         return response.json();
     }).then((json) => {
@@ -274,38 +274,40 @@ const openModal = (post) => {
                 divcontent.appendChild(img);
                 article.appendChild(divcontent);
 
+                const divLike = document.createElement('div');
+                divLike.className = 'row padding';
+
+                const divLikeChild = document.createElement('div');
+                divLikeChild.className = 'pull-left';
+
+                const alikebutton = document.createElement('a');
+                alikebutton.className = "btn icon round text-red fill-silver";
+
+                const like_icon = (p.liked)
+                        ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
+                        : 'https://image.flaticon.com/icons/png/128/126/126471.png';
+                alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
+
+
+                divLikeChild.appendChild(alikebutton);
+
+                const alikeno = document.createElement('a');
+                alikeno.className = "btn white hover-disable text-red text600";
+
+                alikeno.innerHTML = p.likes;
+
+
+                divLikeChild.appendChild(alikeno);
+
+                divLike.appendChild(divLikeChild);
+
+                article.appendChild(divLike);
                 if (p.can_like) {
-                    const divLike = document.createElement('div');
-                    divLike.className = 'row padding';
-
-                    const divLikeChild = document.createElement('div');
-                    divLikeChild.className = 'pull-left';
-
-                    const alikebutton = document.createElement('a');
-                    alikebutton.className = "btn icon round text-red fill-silver";
-
-                    const like_icon = (p.liked)
-                            ? 'https://image.flaticon.com/icons/png/128/148/148836.png'
-                            : 'https://image.flaticon.com/icons/png/128/126/126471.png';
-                    alikebutton.innerHTML = `<img style="border-radius: 100%; height: 1.5em; width:1.5em;" src=${like_icon}>`;
-
-
-                    divLikeChild.appendChild(alikebutton);
-
-                    const alikeno = document.createElement('a');
-                    alikeno.className = "btn white hover-disable text-red text600";
-
-                    alikeno.innerHTML = p.likes;
 
                     alikebutton.addEventListener('click', () => {
                         like(alikebutton, alikeno, p.postId);
                     });
 
-                    divLikeChild.appendChild(alikeno);
-
-                    divLike.appendChild(divLikeChild);
-
-                    article.appendChild(divLike);
                 }
                 const divComment = document.createElement('div');
 
