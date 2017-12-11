@@ -34,6 +34,13 @@ body {
     box-shadow: none;
 }
 
+.delete {
+    width:15px; 
+    height:15px;
+    margin-left:5px;
+    object-fit:cover
+}
+
 .form textarea:focus {
     border: 1px solid #ddd;
     height: 150px;
