@@ -1,109 +1,110 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>
-            Margatsni
-        </title>
-        <link rel="stylesheet" href="./css/profile.css">
-        <link rel="stylesheet" href="./css/feed.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    </head>
-    <body>
-        <ul class="margastni" style="margin-bottom: 20px;">
-            <li><img class="profile" src="image/logo.png"></li> 
-            <li class="slogan" onclick="moveToFeed()">Margastni</li>
-            <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
-            <li class="search"></li>
-            <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
-                    <div class="dropdown-content">
-                      <a class="line1" style="text-decoration: none" href="https://10.114.32.118:8181/GET/profile.html">Profile Page</a><br>
-                      <a class="line2" style="text-decoration: none" onclick="logout()">Log Out</a>
-                    </div>
-            </li>
-        </ul>
 
-        <!-- Social Wrapper Start -->
-        <div class="wrapper center padding-40" id="social">            
-            <!-- Social Form Start -->
-            <div class="modal" style="z-index: 100">
-                <section class="white shadow padding-10 margin-bottom flex-right" 
-                         style="max-width: 650px; margin: auto">
-                    <h5 style="color: #87171b; margin-bottom: 10px; width: 100%">Change profile picture</h5>
-                    <input style="margin-bottom: 10px;" 
-                           id="profile-input" type="file"
-                           accept="image/*"/>
-                    <a class="btn l icon round text-gray hover-text-red">
+<head>
+    <meta charset="utf-8">
+    <title>
+        Margatsni
+    </title>
+    <link rel="stylesheet" href="./css/profile.css">
+    <link rel="stylesheet" href="./css/feed.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <ul class="margastni" style="margin-bottom: 20px;">
+        <li><img class="profile" src="image/logo.png"></li>
+        <li class="slogan" onclick="moveToFeed()">Margastni</li>
+        <li class="margastni__search">
+            <form><input placeholder="Search" type="text" /></form>
+        </li>
+        <li class="search"></li>
+        <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
+            <div class="dropdown-content">
+                <a class="line1" style="text-decoration: none" href="https://10.114.32.118:8181/GET/profile.html">Profile Page</a><br>
+                <a class="line2" style="text-decoration: none" onclick="logout()">Log Out</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Social Wrapper Start -->
+    <div class="wrapper center padding-40" id="social">
+        <!-- Social Form Start -->
+        <div class="modal" style="z-index: 100">
+            <section class="white shadow padding-10 margin-bottom flex-right" style="max-width: 650px; margin: auto">
+                <h5 style="color: #87171b; margin-bottom: 10px; width: 100%">Change profile picture</h5>
+                <input style="margin-bottom: 10px;" id="profile-input" type="file" accept="image/*" />
+                <a class="btn l icon round text-gray hover-text-red">
                         <img id="update-profile" style="height: 1.5em; width:1.5em; padding: 5px;"
                              src="./image/ic_upload.png">
                     </a>
-                    <a class="btn l icon round text-gray hover-text-red">
+                <a class="btn l icon round text-gray hover-text-red">
                         <img id="cancel" style="height: 1.5em; width:1.5em; padding: 5px;"
                              src="./image/ic_cancel.png">
                     </a>
-                </section>
-            </div>
+            </section>
+        </div>
 
-            <section class="white shadow padding-10 margin-bottom"  style="z-index: 100">
-                <form class="form relative">
-                    <div class="col-2 col-persist">
-                        <img id="profile_pic" class=" pull-left width-100 round " src="./image/avatar.png"
-                             style="height: 92px; object-fit: cover"/>
+        <section class="white shadow padding-10 margin-bottom" style="z-index: 100">
+            <form class="form relative">
+                <div class="col-2 col-persist">
+                    <img id="profile_pic" class=" pull-left width-100 round " src="./image/avatar.png" style="height: 92px; object-fit: cover" />
 
-                    </div>
-                    <ul class="col-9 col-persist ">
-                        <li ><h5 id="uname_display">USERNAME</h5></li>
-                        <li id="bio_display">My biography! click below button to edit</li>
-                    </ul>   
-                    <div class="col-2 col-persist">
-                        <a href="#popup1" class="center btn l icon round text-gray hover-text-red">
+                </div>
+                <ul class="col-9 col-persist ">
+                    <li>
+                        <h5 id="uname_display">USERNAME</h5>
+                    </li>
+                    <li id="bio_display">My biography! click below button to edit</li>
+                </ul>
+                <div class="col-2 col-persist">
+                    <a href="#popup1" class="center btn l icon round text-gray hover-text-red">
                             <i class="center fa fa-pencil-square-o"></i>
                         </a>
-                        <div id="popup1" class="overlay" style="z-index: 100">
-                            <div class="popup">
-                                <h2>Edit your profile</h2>
-                                <a class="close" href="#">&times;</a>
-                                <div class="content">
-                                    <form>
-                                        <input id="BIO" placeholder="Say something about your self" type="text"><br>
-                                        <input id="update_bio" type="button" value="Update" onclick="updateBio()">
-                                    </form>
-                                </div>
+                    <div id="popup1" class="overlay" style="z-index: 100">
+                        <div class="popup">
+                            <h2>Edit your profile</h2>
+                            <a class="close" href="#">&times;</a>
+                            <div class="content">
+                                <form>
+                                    <input id="BIO" placeholder="Say something about your self" type="text"><br>
+                                    <input id="update_bio" type="button" value="Update" onclick="updateBio()">
+                                </form>
                             </div>
                         </div>
                     </div>
-                </form>
-            </section>
-            
-            <section class="white shadow padding-10 margin-bottom">
-                <form class="form relative">
-                    <div class="col-1 col-persist">
-                        <img class=" pull-left width-100 round avatar" src="./image/avatar.png" />
+                </div>
+            </form>
+        </section>
 
-                    </div>
-                    <div class="col-9 col-persist gutter-h-10 padding-top-5">
-                        <textarea  id="caption" placeholder="What's new?"></textarea>
-                    </div>
-                    <div class="col-2 col-persist">
-                        <a class="btn l icon round text-gray hover-text-red">
+        <section class="white shadow padding-10 margin-bottom">
+            <form class="form relative">
+                <div class="col-1 col-persist">
+                    <img class=" pull-left width-100 round avatar" src="./image/avatar.png" />
+
+                </div>
+                <div class="col-9 col-persist gutter-h-10 padding-top-5">
+                    <textarea id="caption" placeholder="What's new?"></textarea>
+                </div>
+                <div class="col-2 col-persist">
+                    <a class="btn l icon round text-gray hover-text-red">
                             <img id="pick-button" style="height: 1.5em; width:1.5em; padding: 5px;"
                                  onclick="document.getElementById('file-input').click();"
                                  src="./image/ic_pick.png">
                         </a>
-                        <a class="btn l icon round text-gray hover-text-red">
+                    <a class="btn l icon round text-gray hover-text-red">
                             <img id="upload-button" style="height: 1.5em; width:1.5em; padding: 5px;"
                                  src="./image/ic_upload.png">
                         </a>
-                        <input id="file-input" type="file"
-                               style="display: none;"
-                               accept="image/*"/>
-                    </div>
-                </form>
-            </section>
-        </div>
-        <!-- Social Wrapper Start -->
-        <script src="./javascript/profile.js"></script>
-    </body>
+                    <input id="file-input" type="file" style="display: none;" accept="image/*" />
+                </div>
+            </form>
+        </section>
+    </div>
+    <!-- Social Wrapper Start -->
+    <script src="./javascript/profile.js"></script>
+</body>
+
 </html>

@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html>
-    <head>
 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Margatsni feed</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="./css/profile.css" />
-        <link rel="stylesheet" type="text/css" href="./css/feed.css" />
-        <link href='http://fonts.googleapis.com/css?family=Cambo' rel='stylesheet' type='text/css'>
-<!--        <script type="text/javascript" src="./javascript/feed.js">
+<head>
 
-        </script>	-->
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    </head>
-    <body>
-        <ul class="margastni" style="margin-bottom: 20px;">
-            <li><img class="profile" src="image/logo.png"></li> 
-            <li class="slogan" onclick="moveToFeed()">Margastni</li>
-            <li class="margastni__search"><form><input placeholder="Search" type="text"/></form></li>
-            <li class="search"></li>
-            <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
-                    <div class="dropdown-content">
-                      <a class="line1" style="text-decoration: none" href="https://10.114.32.118:8181/GET/profile.html">Profile Page</a><br>
-                      <a class="line2" style="text-decoration: none" onclick="logout()">Log Out</a>
-                    </div>
-            </li>
-        </ul>
-        <div style="justify-content: center" id="content"></div>
-        <div class="modal" style="z-index: 100">
-            <h1 class="closeBtn" onclick="closeModal()">&#215;</h1>
-            <section class="post">
-            </section>
-        </div>
-        <script type="text/javascript" src="./javascript/feed.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Margatsni feed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./css/profile.css" />
+    <link rel="stylesheet" type="text/css" href="./css/feed.css" />
+    <link href='http://fonts.googleapis.com/css?family=Cambo' rel='stylesheet' type='text/css'>
+</head>
 
-    </body>
+<body>
+    <ul class="margastni" style="margin-bottom: 20px;">
+        <li><img class="profile" src="image/logo.png"></li>
+        <li class="slogan" onclick="moveToFeed()">Margastni</li>
+        <li class="margastni__search">
+            <form><input placeholder="Search" type="text" /></form>
+        </li>
+        <li class="search"></li>
+        <li class="dropdown"><img class="profile dropdown" src="image/avatar.png">
+            <div class="dropdown-content">
+                <a class="line1" style="text-decoration: none" href="https://10.114.32.118:8181/GET/profile.html">Profile Page</a><br>
+                <a class="line2" style="text-decoration: none" onclick="logout()">Log Out</a>
+            </div>
+        </li>
+    </ul>
+    <div style="justify-content: center" id="content"></div>
+    <div class="modal" style="z-index: 100">
+        <h1 class="closeBtn" onclick="closeModal()">&#215;</h1>
+        <section class="post">
+        </section>
+    </div>
+    <script type="text/javascript" src="./javascript/feed.js"></script>
+
+</body>
+
 </html>
