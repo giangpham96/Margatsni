@@ -8,34 +8,34 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
     </head>
     <body>
-        <div class="container">
-        <div class="login-box">
-            <h1>Margatsni</h1>
-            <nav class="tab-selector">
-                <ul>
-                    <li><a href="#" class="active" id="logintab">Log in</a></li>
-                    <li><a href="#" class="inactive" id="signuptab">Sign up</a></li>
-                </ul>
-            </nav>
-            <div class="tab">
-                <form method="post" id="logInForm">
-                    <input placeholder="e-mail" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
-                    <input placeholder="password" type=password required>
-                </form>
-                <p id="errorli" class="invisible">.</p>
-                <button id="logInbtn">Log in</button>
+        <div class="container" style="background-color: #00000066">
+            <div class="login-box">
+                <h1>Margatsni</h1>
+                <nav class="tab-selector">
+                    <ul>
+                        <li><a href="#" class="active" id="logintab">Log in</a></li>
+                        <li><a href="#" class="inactive" id="signuptab">Sign up</a></li>
+                    </ul>
+                </nav>
+                <div class="tab">
+                    <form method="post" id="logInForm">
+                        <input placeholder="e-mail" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                        <input placeholder="password" type=password required>
+                    </form>
+                    <p id="errorli" class="invisible">.</p>
+                    <button id="logInbtn">Log in</button>
+                </div>
+                <div class="tab hidden">
+                    <form id="signUpForm">
+                        <input placeholder="username" type="text" minlength="4" pattern="[a-zA-Z0-9]*" required>
+                        <input placeholder="e-mail" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                        <input placeholder="password" type="password" minlength="6" pattern="[a-zA-Z0-9]*" required>
+                    </form>
+                    <p id="errorsu" class="invisible">.</p>
+                    <button id="signUpbtn">Sign up</button>
+                </div>
+                <button id="contbtn">Continue without an account</button>
             </div>
-            <div class="tab hidden">
-                <form id="signUpForm">
-                    <input placeholder="username" type="text" minlength="4" pattern="[a-zA-Z0-9]*" required>
-                    <input placeholder="e-mail" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
-                    <input placeholder="password" type="password" minlength="6" pattern="[a-zA-Z0-9]*" required>
-                </form>
-                <p id="errorsu" class="invisible">.</p>
-                <button id="signUpbtn">Sign up</button>
-            </div>
-            <button id="contbtn">Continue without an account</button>
-        </div>
         </div>
     </body>
     <script src="./javascript/login_1.js"></script>
