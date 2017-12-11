@@ -94,7 +94,7 @@ public class FeedResource {
                 jpost.put("caption", post.getCaption());
 
                 boolean ownedPost = false;
-                if (post.getUid().getUid() == uid) {
+                if (post.getUid().getUid() == uid || user.getIsAdmin()) {
                     ownedPost = true;
                 }
 

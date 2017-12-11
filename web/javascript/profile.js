@@ -187,6 +187,24 @@ const loadPage = () => {
     });
 };
 
+const deletePost = (postId) => {
+    fetch(`https://10.114.32.118:8181/GET/api/post`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'auth-token': getCookie('auth-token')
+        },
+        body:`post=${postId}`
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        window.location.href = 'https://10.114.32.118:8181/GET/profile.html'
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 const createArticle = (json, p) => {
     const article = document.createElement('article');
     article.className = 'item white shadow cf';
@@ -215,12 +233,19 @@ const createArticle = (json, p) => {
     const h5username = document.createElement('h5');
     h5username.className = "text-15 text700 pull-left red-text";
     h5username.innerHTML = json.uname;
-
+    
+    const delButton = document.createElement('img');
+    delButton.className = "pull-right delete";
+    delButton.setAttribute('src', 'https://10.114.32.118:8181/GET/image/ic_del.png');
+    delButton.addEventListener('click', () => {
+        deletePost(p.postId)
+    });
     const ats = document.createElement('a');
     ats.className = 'pull-right label fill-white text-gray';
     ats.innerHTML = timeSince(p.timestamp);
 
     divusername.appendChild(h5username);
+    divusername.appendChild(delButton);
     divusername.appendChild(ats);
     divheader.appendChild(divusername);
 

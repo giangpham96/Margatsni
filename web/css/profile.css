@@ -53,6 +53,18 @@ a,body,center,form,h5,img,u{
     margin:0;
     padding:0
 }
+
+.delete {
+    width:15px; 
+    height:15px;
+    margin-left:5px;
+    object-fit:cover
+}
+
+a[href="#popup1"]{
+    display: flex;
+    align-items: center;
+}
 html{
     box-sizing:border-box;
     -moz-box-sizing:border-box;

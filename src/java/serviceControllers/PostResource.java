@@ -348,7 +348,7 @@ public class PostResource {
                     .build();
         }
 
-        if (post.getUid().getUid() != uid) {
+        if (post.getUid().getUid() != uid && !hb.getUserById(uid).getIsAdmin()) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"message\":\"permission denied\"}")
                     .build();

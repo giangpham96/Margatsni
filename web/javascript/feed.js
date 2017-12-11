@@ -20,7 +20,7 @@ const setupBlocks = () => {
 const positionBlocks = () => {
     let block = document.getElementsByClassName("block");
     for (let i = 0, max = block.length; i < max; i++) {
-        
+
         let min = Array.min(blocks);
 
         let index = blocks.indexOf(min);
@@ -127,31 +127,32 @@ const createComment = (ulComment, textArea, post_id) => {
 
 const timeSince = (date) => {
 
-  let seconds = Math.floor((new Date() - date) / 1000);
+    let seconds = Math.floor((new Date() - date) / 1000);
 
-  let interval = Math.floor(seconds / 31536000);
+    let interval = Math.floor(seconds / 31536000);
 
-  if (interval > 1) {
-    return interval + " years ago";
-  }
-  interval = Math.floor(seconds / 2592000);
-  if (interval > 1) {
-    return interval + " months ago";
-  }
-  interval = Math.floor(seconds / 86400);
-  if (interval > 1) {
-    return interval + " days ago";
-  }
-  interval = Math.floor(seconds / 3600);
-  if (interval > 1) {
-    return interval + " hours ago";
-  }
-  interval = Math.floor(seconds / 60);
-  if (interval > 1) {
-    return interval + " minutes ago";
-  }
-  if (seconds < 0) seconds = 0;
-  return Math.floor(seconds) + " seconds";
+    if (interval > 1) {
+        return interval + " years ago";
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + " months ago";
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + " days ago";
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours ago";
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes ago";
+    }
+    if (seconds < 0)
+        seconds = 0;
+    return Math.floor(seconds) + " seconds";
 };
 
 const renderComment = (c) => {
@@ -179,6 +180,23 @@ const renderComment = (c) => {
     return li;
 };
 
+const deletePost = (postId) => {
+    fetch(`https://10.114.32.118:8181/GET/api/post`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'auth-token': getCookie('auth-token')
+        },
+        body:`post=${postId}`
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        window.location.href = 'https://10.114.32.118:8181/GET/feed.html'
+    }).catch((err) => {
+        console.log(err);
+    });
+}
 const openModal = (post) => {
     const modal = document.getElementsByClassName('modal')[0];
     fetch(`https://10.114.32.118:8181/GET/api/post/${encodeURIComponent(post.postId)}`, {
@@ -226,6 +244,15 @@ const openModal = (post) => {
                 ats.innerHTML = timeSince(p.timestamp);
 
                 divusername.appendChild(h5username);
+                if (post.owned) {
+                    const delButton = document.createElement('img');
+                    delButton.className = "pull-right delete";
+                    delButton.setAttribute('src', 'https://10.114.32.118:8181/GET/image/ic_del.png');
+                    delButton.addEventListener('click', () => {
+                        deletePost(p.postId)
+                    });
+                    divusername.appendChild(delButton);
+                }
                 divusername.appendChild(ats);
                 divheader.appendChild(divusername);
 
@@ -327,8 +354,8 @@ const openModal = (post) => {
                 sectionPost.appendChild(article);
                 modal.style.display = 'block';
             }).catch((err) => {
-                modal.style.display = 'none';
-            })
+        modal.style.display = 'none';
+    })
 
 };
 const getCookie = (cname) => {
@@ -359,11 +386,11 @@ const closeModal = () => {
 
 const logout = () => {
     document.cookie.split(";")
-            .forEach((c) => 
-    { 
-        document.cookie = c.replace(/^ +/, "")
-                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-    });
+            .forEach((c) =>
+            {
+                document.cookie = c.replace(/^ +/, "")
+                        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
     window.location.href = 'https://10.114.32.118:8181/GET/'
 };
 
