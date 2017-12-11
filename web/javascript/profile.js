@@ -347,7 +347,7 @@ const createComment = (ulComment, textArea, post_id) => {
         },
         credentials: 'include',
         method: 'POST',
-        body: `post=${post_id}&content=${textArea.value}`
+        body: `post=${encodeURIComponent(post_id)}&content=${textArea.value}`
     })
             .then((response) => {
                 return response.json();
