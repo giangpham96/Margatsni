@@ -573,6 +573,10 @@ ul {
     img {
         float: left;
     }
+    .margatsni__search {
+        padding-right: 0;
+        padding-left: 1em;
+    }
 }
 
 @media (max-width: 414px) {
