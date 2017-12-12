@@ -540,7 +540,7 @@ ul {
     .col-persist.col-1 {
         width: 8.33333333%;
     }
-    .form {
+    .form, .wrapper{
         width: 100%;
     }
 
@@ -564,6 +564,14 @@ ul {
         float: none !important;
         display: block;
         margin: 0 auto !important;
+    }
+    .wrapper, .col-persist.col-9,
+    .col-persist.col-2, .col-persist.col-1{
+        width: 100%;
+        
+    }
+    img {
+        float: left;
     }
 }
 
