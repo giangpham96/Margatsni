@@ -594,7 +594,7 @@ ul {
 @media (max-width: 320px) {
     .wrapper, .col-persist.col-9,
     .col-persist.col-2, .col-persist.col-1{
-        width: 60%;
+        width: 100%;
     }
 }
 
