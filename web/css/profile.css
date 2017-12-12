@@ -444,8 +444,8 @@ padding-left-40-important {
 
 .avatar {
     object-fit: cover;
-    height: 45px;
-    width: 45px;
+    height: 45px !important;
+    width: 45px !important;
 }
 
 .hover-text-red:hover {
