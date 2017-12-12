@@ -568,27 +568,13 @@ ul {
 }
 
 @media (max-width: 414px) {
-    .form {
+    .wrapper, .col-persist.col-9,
+    .col-persist.col-2, .col-persist.col-1{
         width: 100%;
-        margin-bottom: 6px;
+        
     }
-}
-
-@media (max-width: 748px) {
-    .wrapper748 {
-        width: 100%;
-    }
-}
-
-@media (max-width: 960px) {
-    .wrapper960 {
-        width: 100%;
-    }
-}
-
-@media (max-width: 1280px) {
-    .wrapper1280 {
-        width: 100%;
+    img {
+        float: left;
     }
 }
 @media (max-width: 320px) {
