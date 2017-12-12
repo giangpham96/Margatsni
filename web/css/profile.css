@@ -57,7 +57,7 @@ body {
     margin: 15px 0;
 }
 
-.item .label {
+.item  {
     margin-top: -1px;
 }
 
@@ -121,7 +121,9 @@ textarea {
 .wrapper960:after,
 .wrapper960:before,
 .wrapper320:after,
-.wrapper320:before{
+.wrapper320:before,
+.wrapper414:before,
+.wrapper414:after {
     content: ".";
     display: block;
     height: 0;
@@ -134,7 +136,9 @@ h5 {
     color: #444;
     line-height: 1;
 }
-
+.wrapper414 {
+    width: 414px;
+}
 .wrapper748 {
     width: 748px
 }
@@ -298,8 +302,7 @@ textarea {
 .btn,
 .btn-addon,
 .button-group,
-.buttons,
-.label {
+.buttons {
     display: inline-block
 }
 
@@ -565,7 +568,7 @@ ul {
 }
 
 @media (max-width: 414px) {
-    .form label {
+    .form {
         width: 100%;
         margin-bottom: 6px;
     }
