@@ -2,7 +2,7 @@
 
 let colCount = 0;
 let colWidth = 0;
-let margin = 20;
+let margin = 10;
 let windowWidth = 0;
 let blocks = [];
 const setupBlocks = () => {
