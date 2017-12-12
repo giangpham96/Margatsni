@@ -5,9 +5,7 @@
     src: local('Billabong'), url('Billabong.woff') format('woff');
 }
 
-html,
-body,
-img {
+html,body,img {
     margin: 0;
     padding: 0;
     border: 0;

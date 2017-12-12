@@ -561,7 +561,7 @@ ul {
 }
 
 @media (max-width: 414px) {
-    .form label {
+    .form label, .col-persist.col-9, .col-persist.col-2, .col-persist.col-1 {
         width: 100%;
         margin-bottom: 6px;
     }
