@@ -592,8 +592,8 @@ ul {
     }
 }
 @media (max-width: 320px) {
-    .wrapper320 {
-        width: 100%;
+    .wrapper {
+        width: 320px;
     }
 }
 
