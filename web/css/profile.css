@@ -595,6 +595,10 @@ ul {
     .wrapper, .col-persist.col-9,
     .col-persist.col-2, .col-persist.col-1{
         width: 100%;
+        
+    }
+    img {
+        float: left;
     }
 }
 
