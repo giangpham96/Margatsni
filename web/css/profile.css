@@ -576,6 +576,10 @@ ul {
     .margastni__search {
         padding-right: 0 !important;
     }
+    .margastni {
+        padding: 0!important;
+    }
+    . {}
 }
 
 @media (max-width: 414px) {
