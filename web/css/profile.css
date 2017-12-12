@@ -603,6 +603,9 @@ ul {
     img {
         float: left;
     }
+    .slogan {
+        font-size: 2em !important;
+    }
 }
 
 .no padding {
