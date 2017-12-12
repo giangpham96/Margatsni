@@ -119,7 +119,9 @@ textarea {
 .wrapper748:after,
 .wrapper748:before,
 .wrapper960:after,
-.wrapper960:before {
+.wrapper960:before,
+.wrapper320:after,
+.wrapper320:before{
     content: ".";
     display: block;
     height: 0;
@@ -144,7 +146,9 @@ h5 {
 .wrapper1280 {
     width: 1280px
 }
-
+.wrapper320 {
+    width: 320px;
+}
 .overlay {
     position: fixed;
     top: 0;
@@ -561,7 +565,7 @@ ul {
 }
 
 @media (max-width: 414px) {
-    .form label, .col-persist.col-9, .col-persist.col-2, .col-persist.col-1 {
+    .form label {
         width: 100%;
         margin-bottom: 6px;
     }
@@ -581,6 +585,11 @@ ul {
 
 @media (max-width: 1280px) {
     .wrapper1280 {
+        width: 100%;
+    }
+}
+@media (max-width: 320px) {
+    .wrapper320 {
         width: 100%;
     }
 }
