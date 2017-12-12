@@ -216,3 +216,17 @@ input[type=text]:focus {
     width: 35px;
     border-radius: 100%;
 }
+@media (max-width: 603px) {
+    .margastni__search {
+        padding-right: 0 !important;
+    }
+    .margastni {
+        padding: 0!important;
+    }
+}
+
+@media (max-width: 414px) {
+    .slogan {
+        padding-left: 5px !important;
+    }
+}
